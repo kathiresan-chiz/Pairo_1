@@ -1,0 +1,24 @@
+# Netlify builds and hosts the React site in client/.
+# The Express API in server/ is not run by Netlify (see the /api redirect below).
+
+[build]
+  base = "client"
+  command = "npm run build"
+  publish = "dist"          # relative to base, i.e. client/dist
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Forward form submissions to wherever the Express API is hosted.
+# Replace the URL with your API's address, then uncomment.
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://YOUR-API-HOST/api/:splat"
+#   status = 200
+#   force = true
+
+# Single-page app: let React Router handle every page URL (/about, /insights/..., etc.).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
