@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+/* Brand tokens — from the PAIRO identity board and colour palette */
+@theme {
+  --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --color-navy: #072d59;
+  --color-navy-deep: #0e2547;
+  --color-ink: #0b1424;
+  --color-brand: #3a78c2;
+  --color-brand-deep: #1b4a8c;
+  --color-brand-soft: #7fb1f0;
+  --color-seal: #dbf2fc;
+  --color-seal-soft: #eef8fd;
+  --color-seal-bright: #9fdcfa;
+  --color-crimson: #fd6e88;
+  --color-mist: #f3f6fa;
+  --color-muted: #5b6577;
+  --color-line: #dfe5ee;
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-flow: flow 6s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-dash: dash 6s linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes flow {
+    from { background-position: 0% 50%; }
+    to { background-position: 300% 50%; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+    50% { transform: translateY(-8px) rotate(var(--r, 0deg)); }
+  }
+  @keyframes dash {
+    to { stroke-dashoffset: -400; }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-mist font-sans text-ink antialiased;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    @apply bg-seal text-navy;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand;
+  }
+}
+
+@layer components {
+  /* Page content spans 90% of the viewport */
+  .container-x {
+    @apply mx-auto w-[90%];
+  }
+
+  /* The logo "O": a flowing gradient masked into the ring shape, with a soft glow */
+  .logo-o {
+    background-size: 300% 100%;
+    mask: var(--mask) center / 100% 100% no-repeat;
+    -webkit-mask: var(--mask) center / 100% 100% no-repeat;
+    @apply animate-flow;
+  }
+  .glow-soft {
+    animation: pulse-soft 4s ease-in-out infinite;
+  }
+  .glow-strong {
+    animation: pulse-strong 4s ease-in-out infinite;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-rise {
+    transform: translateY(48px) scale(0.97);
+    transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .reveal-rise.is-visible {
+    transform: none;
+  }
+
+  /* Frosted glass surfaces: light (on blue panels) and dark (on ink panels) */
+  .glass {
+    @apply border border-white/30 bg-white/15 backdrop-blur-2xl;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 24px 48px -24px rgba(7, 45, 89, 0.55);
+  }
+  /*
+   * Liquid hover fill for pill buttons (see LiquidFill.tsx). A circle centred on the
+   * arrow, 2.2× the button's width, scales up from nothing so its edge sweeps across
+   * the whole pill at an even pace, whatever the button's length.
+   */
+  .liquid-fill {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    right: calc(1.375rem - 110%);
+    width: 220%;
+    aspect-ratio: 1;
+    /* Vertical margins resolve against the button's width, so -110% centres the circle. */
+    margin-top: -110%;
+    border-radius: 9999px;
+    pointer-events: none;
+    transform: scale(0);
+    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .liquid-fill--lead {
+    opacity: 0.4;
+  }
+  .group:hover > .liquid-fill,
+  .group:focus-visible > .liquid-fill {
+    transform: scale(1);
+    transition-duration: 0.8s;
+    transition-timing-function: cubic-bezier(0.22, 0.75, 0.25, 1);
+  }
+  .group:hover > .liquid-fill--main,
+  .group:focus-visible > .liquid-fill--main {
+    transition-delay: 0.07s;
+  }
+  .group:disabled > .liquid-fill {
+    transform: scale(0);
+  }
+
+  /*
+   * Arrow icon that turns 45° when its `group` is hovered or focused. Only the icon
+   * turns (its circle stays still), on the same gentle curve as the liquid fill.
+   */
+  .arrow-turn {
+    transition: transform 0.7s cubic-bezier(0.22, 0.8, 0.2, 1);
+    will-change: transform;
+  }
+  .group:hover .arrow-turn,
+  .group:focus-visible .arrow-turn {
+    transform: rotate(45deg);
+  }
+
+  /* Segmented index bar (AI section): solid fill grows in, then fine stripes */
+  .segment-fill {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s;
+  }
+  .is-visible .segment-fill {
+    transform: none;
+  }
+  .segment-rest {
+    background: repeating-linear-gradient(90deg, rgba(219, 242, 252, 0.4) 0 6px, transparent 6px 9px);
+  }
+
+  /*
+   * Cuts a notch out of the top-right corner to seat the 56px arrow button.
+   * One solid layer minus one drawn cut-out, so there are no seams between
+   * mask pieces at fractional display scaling (125%, 150%).
+   * The cut-out (90×90px): 20px fillet into the top edge, 40px curve wrapping
+   * the button, 20px fillet into the right edge.
+   */
+  .notch {
+    -webkit-mask:
+      linear-gradient(#000 0 0),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'%3E%3Cpath d='M0 0A20 20 0 0 1 20 20L20 30A40 40 0 0 0 60 70L70 70A20 20 0 0 1 90 90L90 0Z'/%3E%3C/svg%3E")
+        top right / 90px 90px no-repeat;
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'%3E%3Cpath d='M0 0A20 20 0 0 1 20 20L20 30A40 40 0 0 0 60 70L70 70A20 20 0 0 1 90 90L90 0Z'/%3E%3C/svg%3E")
+        top right / 90px 90px no-repeat;
+    mask-composite: exclude;
+  }
+
+  /* Concave corner used where the heading tab meets the blue panel */
+  .inverted-corner {
+    background: radial-gradient(circle at 100% 100%, transparent 2.5rem, var(--color-mist) calc(2.5rem + 0.5px));
+  }
+
+  /* Fine film grain over gradient panels; the parent needs `relative isolate` */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(rgba(110, 166, 236, 0.55) 1.2px, transparent 1.6px);
+    background-size: 18px 18px;
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(58, 120, 194, 0.25)); }
+  50% { filter: drop-shadow(0 0 12px rgba(253, 110, 136, 0.55)); }
+}
+@keyframes pulse-strong {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(150, 140, 235, 0.7)) drop-shadow(0 0 18px rgba(110, 130, 230, 0.5)); }
+  50% { filter: drop-shadow(0 0 14px rgba(190, 150, 240, 1)) drop-shadow(0 0 46px rgba(110, 150, 240, 0.8)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+  .reveal, .reveal-rise { opacity: 1; transform: none; }
+}
