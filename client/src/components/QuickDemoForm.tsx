@@ -71,7 +71,7 @@ export default function QuickDemoForm() {
           onChange={(e) => setConsent(e.target.checked)}
           className="mt-0.5 size-4 shrink-0 accent-crimson"
         />
-        I agree to be contacted by PAIRO about my demo, in line with the Privacy Policy.
+        I agree to be contacted by PairO about my demo, in line with the Privacy Policy.
       </label>
       {error && (
         <p role="alert" className="px-1 text-xs text-crimson">

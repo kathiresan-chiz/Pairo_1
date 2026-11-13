@@ -1,22 +1,26 @@
+import type { ReactNode } from 'react'
 import Reveal from './Reveal'
 import Button from './Button'
 import { Eyebrow } from './SectionHeader'
-import { aiCapabilities } from '../content/site'
 
 interface AiSectionProps {
   id?: string
-  eyebrow?: string
+  eyebrow: string
   title: string
   text?: string
+  items: { title: string; text: string; fill?: number }[]
+  closing: string
+  cta: { label: string; to: string }
+  children?: ReactNode
 }
 
-// Matte navy panel: a large statement, then the capabilities as an index grid.
-// Each bar uses the capability's `fill` from content, or its position in the list.
-export default function AiSection({ id, eyebrow = 'AI intelligence', title, text }: AiSectionProps) {
-  const total = aiCapabilities.length
+// Matte navy panel: a large statement, then the items as an index grid.
+// Each bar uses the item's `fill`, or its position in the list.
+export default function AiSection({ id, eyebrow, title, text, items, closing, cta, children }: AiSectionProps) {
+  const total = items.length
 
   return (
-    <section id={id} className="container-x py-6">
+    <section id={id} className="container-x scroll-mt-24 py-6">
       <div className="rounded-[2.5rem] bg-navy px-6 py-16 text-white sm:px-12 sm:py-20 lg:px-16 lg:py-24">
         <Reveal className="max-w-4xl">
           <Eyebrow tone="light">{eyebrow}</Eyebrow>
@@ -25,7 +29,7 @@ export default function AiSection({ id, eyebrow = 'AI intelligence', title, text
         </Reveal>
 
         <div className="mt-16 grid gap-x-16 gap-y-14 md:grid-cols-2 lg:mt-20">
-          {aiCapabilities.map((cap, i) => (
+          {items.map((cap, i) => (
             <Reveal key={cap.title} delay={(i % 2) * 120}>
               <div className="flex items-start gap-6">
                 <p className="shrink-0 text-5xl leading-none font-medium tracking-[-0.04em] tabular-nums sm:text-6xl">
@@ -40,18 +44,18 @@ export default function AiSection({ id, eyebrow = 'AI intelligence', title, text
               <SegmentBar fill={cap.fill ?? (i + 1) / total} />
             </Reveal>
           ))}
-
-          <Reveal delay={120} className="flex flex-col justify-between gap-6 border-t border-white/15 pt-8 md:border-t-0 md:pt-0">
-            <p className="max-w-sm text-xl leading-snug font-medium text-balance">
-              Every capability works on your own PAIRO data, inside the modules your teams already use.
-            </p>
-            <div>
-              <Button to="/contact?intent=demo" variant="light">
-                See it in a demo
-              </Button>
-            </div>
-          </Reveal>
         </div>
+
+        {children && <div className="mt-16">{children}</div>}
+
+        <Reveal className="mt-14 flex flex-col justify-between gap-6 border-t border-white/15 pt-8 sm:flex-row sm:items-center">
+          <p className="max-w-lg text-xl leading-snug font-medium text-balance">{closing}</p>
+          <div>
+            <Button to={cta.to} variant="light">
+              {cta.label}
+            </Button>
+          </div>
+        </Reveal>
       </div>
     </section>
   )

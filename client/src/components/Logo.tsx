@@ -31,7 +31,7 @@ interface LogoProps {
 export default function Logo({ tone = 'dark', glow = true, className = 'h-9' }: LogoProps) {
   const t = tones[tone]
   return (
-    <span role="img" aria-label="PAIRO" className={`relative inline-block aspect-[1511/522] ${className}`}>
+    <span role="img" aria-label="PairO" className={`relative inline-block aspect-[1511/522] ${className}`}>
       <img src={t.src} alt="" className="absolute inset-0 size-full" />
       <span aria-hidden="true" className={`absolute inset-0 ${glow ? t.glow : ''}`}>
         <span

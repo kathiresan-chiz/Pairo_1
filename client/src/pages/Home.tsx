@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, Quote, X } from 'lucide-react'
+import { ArrowUpRight, BellRing, Check, ListChecks, Scale, ShieldAlert, SlidersHorizontal, Wand2 } from 'lucide-react'
 import Seo from '../components/Seo'
 import Button from '../components/Button'
 import Reveal from '../components/Reveal'
@@ -9,48 +9,88 @@ import SectionHeader from '../components/SectionHeader'
 import InfinityVisual from '../components/InfinityVisual'
 import DashboardMock from '../components/DashboardMock'
 import QuickDemoForm from '../components/QuickDemoForm'
+import HeroStage from '../components/HeroStage'
 import LiquidFill from '../components/LiquidFill'
 import ModuleExplorer from '../components/ModuleExplorer'
 import AiSection from '../components/AiSection'
 import WhySection from '../components/WhySection'
-import ArticleCard from '../components/ArticleCard'
+import ParrotChat from '../components/ParrotChat'
+import { CustomCheckCard, HealthPanel } from '../components/Health'
+import { StepRow } from '../components/SolutionBlocks'
+import OnboardingSection from '../components/OnboardingSection'
 import CtaBanner, { brandGradient } from '../components/CtaBanner'
 import monogram from '../assets/brand/monogram-white.png'
+import { homeChat } from '../content/chat'
+import { solutions, solutionsHub } from '../content/solutions'
 import {
-  articles,
+  agentDay,
   company,
-  integrations,
-  steps,
-  testimonials,
-  tickerWords,
-  type Integration,
+  compliance,
+  dualRole,
+  globalCta,
+  healthCheck,
+  home,
+  parrotIntro,
 } from '../content/site'
 
-const heroPills = [
-  { label: 'Finance & Accounting', r: '-7deg', solid: false },
-  { label: 'Inventory', r: '6deg', solid: true },
-  { label: 'Sales & CRM', r: '-3deg', solid: false },
-  { label: 'HR & Payroll', r: '4deg', solid: true },
-  { label: 'AI assistance', r: '-5deg', solid: false },
-]
+const pillTilt = ['-7deg', '6deg', '-3deg', '4deg', '-5deg', '3deg']
 
-const problems = [
-  { title: 'Disconnected systems', text: 'Finance, stock and sales live in separate tools that never quite agree.' },
-  { title: 'Repetitive manual work', text: 'Teams re-key the same data, chase approvals and rebuild the same reports.' },
-  { title: 'Scattered information', text: 'Answers are spread across inboxes and spreadsheets, so decisions wait.' },
+const healthCards = [
+  {
+    icon: ListChecks,
+    title: '70 built-in checks',
+    text: '70 checks across 12 audit areas, live with every posting.',
+    highlight: 'live with every posting',
+    to: healthCheck.link.to,
+  },
+  {
+    icon: ShieldAlert,
+    title: healthCheck.alert.title,
+    text: healthCheck.alert.text,
+    highlight: 'Reverse it before filing GSTR-3B.',
+    to: healthCheck.link.to,
+  },
+  {
+    icon: Scale,
+    title: 'GSTR-3B, GSTR-1 and books agree',
+    text: 'Trial balance balances Dr = Cr. TDS register equals ledger. Stock value equals inventory ledgers.',
+    highlight: 'Dr = Cr',
+    to: healthCheck.link.to,
+  },
+  {
+    icon: Wand2,
+    title: 'Any rule, zero code',
+    text: 'Custom checks: your rules, enforced every day.',
+    highlight: 'enforced every day',
+    to: `${healthCheck.link.to}#custom`,
+  },
+  {
+    icon: SlidersHorizontal,
+    title: 'Severity you define',
+    text: 'Fine-tune the built-in checks, and set the severity of every rule you add.',
+    highlight: 'Fine-tune the built-in checks',
+    to: `${healthCheck.link.to}#custom`,
+  },
+  {
+    icon: BellRing,
+    title: 'Alerts routed to the right people',
+    text: 'Owner, Accounts head · daily 8 am.',
+    highlight: 'daily 8 am',
+    to: `${healthCheck.link.to}#custom`,
+  },
 ]
 
 export default function Home() {
   return (
     <>
       <Seo
-        title="PairoApps | AI-Powered ERP Software for Smarter Business Management"
-        description="PAIRO is AI-powered ERP software that connects finance, inventory, sales and people in one intelligent platform. Simplify operations and make smarter decisions."
+        title="PairO | The agentic ERP built for Indian business"
+        description="The agentic accountant that closes your books. Fully automated, 24×7: twelve agents on one ledger, real-time Health Check, Parrot AI and statutory compliance built in."
         path="/"
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'SoftwareApplication',
-          name: 'PAIRO',
+          name: company.name,
           applicationCategory: 'BusinessApplication',
           operatingSystem: 'Web',
           description: company.description,
@@ -58,35 +98,12 @@ export default function Home() {
       />
 
       {/* 01 — Hero */}
-      <section className="container-x pt-10 pb-8 sm:pt-16">
-        <div className="grid gap-8 xl:grid-cols-[1.75fr_1fr] xl:items-end">
-          <Reveal>
-            <h1 className="text-[2.4rem] leading-[1.02] font-semibold tracking-[-0.04em] sm:text-6xl lg:text-7xl xl:text-[4.2rem] 2xl:text-[5.2rem]">
-              <span className="block">Business, Connected.</span>
-              <span className="block">
-                <InfinityVisual glow={false} className="mr-3 inline-block h-[0.62em] w-auto align-[0.02em] sm:mr-5" />
-                Intelligence, <span className="whitespace-nowrap text-brand">Built In.</span>
-              </span>
-            </h1>
-          </Reveal>
-          <Reveal delay={150} className="xl:pb-3">
-            <p className="max-w-sm leading-relaxed text-muted">
-              <strong className="font-semibold text-ink">PAIRO</strong> is AI-powered ERP that brings your entire business
-              together. Simplify operations, connect workflows and make smarter decisions through one intelligent platform.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button to="/services">Explore solutions</Button>
-              <Button to="/contact?intent=demo" variant="outline" arrow={false}>
-                Book a demo
-              </Button>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <HeroStage />
 
-      <Marquee items={tickerWords} className="container-x" />
+      <Marquee items={solutions.map((s) => s.agent)} className="container-x" />
 
-      <section className="container-x pt-8 pb-6">
+      {/* 02 — The agent at work */}
+      <section id="overview" className="container-x scroll-mt-24 pt-8 pb-6">
         <div className="grid gap-4 xl:grid-cols-[1.75fr_1fr]">
           <Reveal
             className="grain relative isolate overflow-hidden rounded-[2.5rem] p-6 text-white sm:min-h-[560px] sm:p-10"
@@ -97,29 +114,26 @@ export default function Home() {
               aria-hidden="true"
             />
             <InfinityVisual className="absolute top-[18%] -left-28 -z-10 w-[720px] opacity-70" />
-            <div className="flex justify-between text-[11px] font-medium tracking-[0.2em] text-seal/80 uppercase">
-              <span>
-                Smart ledgers
-                <br />
-                Strong connections
-              </span>
-              <span className="text-right">
-                All modules
-                <br />
-                connected
+            <div className="flex flex-col gap-2 text-[11px] font-medium tracking-[0.2em] text-seal/80 uppercase sm:flex-row sm:justify-between sm:gap-6">
+              <span className="max-w-[18rem]">{home.builtBy}</span>
+              <span className="sm:text-right">
+                {home.liveAgent.label}
+                <br className="hidden sm:block" />
+                <span className="sm:hidden"> · </span>
+                {home.liveAgent.status}
               </span>
             </div>
             <DashboardMock className="relative mt-8 sm:ml-auto sm:w-[80%] lg:w-[66%] xl:w-[64%]" />
             <ul className="relative z-10 mt-6 flex flex-wrap gap-2 lg:absolute lg:bottom-10 lg:left-8 lg:mt-0 lg:max-w-[28%] xl:max-w-[32%]">
-              {heroPills.map((p, i) => (
+              {home.agentTicker.map((label, i) => (
                 <li
-                  key={p.label}
+                  key={label}
                   className={`rounded-full px-4 py-2 text-sm font-medium sm:animate-float ${
-                    p.solid ? 'bg-white text-ink shadow-lg shadow-navy/30' : 'bg-white/10 text-white ring-1 ring-white/30 backdrop-blur'
+                    i % 2 ? 'bg-white text-ink shadow-lg shadow-navy/30' : 'bg-white/15 text-white ring-1 ring-white/30'
                   }`}
-                  style={{ '--r': p.r, animationDelay: `${i * 0.6}s` } as CSSProperties}
+                  style={{ '--r': pillTilt[i % pillTilt.length], animationDelay: `${i * 0.6}s` } as CSSProperties}
                 >
-                  {p.label}
+                  {label}
                 </li>
               ))}
             </ul>
@@ -127,19 +141,24 @@ export default function Home() {
 
           <div className="flex flex-col gap-4">
             <Reveal delay={120} className="flex-1 rounded-[2.5rem] bg-ink p-6 text-white sm:p-8">
-              <h2 className="text-xl font-semibold text-seal">See PAIRO in action</h2>
-              <p className="mt-2 text-sm leading-relaxed text-white/60">
-                Share your details and we will arrange a walkthrough tailored to the way your business works.
-              </p>
+              <h2 className="text-xl font-semibold text-seal">Book a demo</h2>
+              <ul className="mt-4 grid gap-2 text-sm text-white/70">
+                {home.onboardingStats.map((st) => (
+                  <li key={st.label} className="flex items-center gap-2">
+                    <Check className="size-4 text-seal-bright" aria-hidden="true" />
+                    <span className="font-semibold text-white">{st.value}</span> {st.label}
+                  </li>
+                ))}
+              </ul>
               <QuickDemoForm />
             </Reveal>
             <Reveal delay={200}>
               <Link
-                to="#ecosystem"
+                to={solutionsHub.link.to}
                 className="group relative isolate flex items-center justify-between overflow-hidden rounded-full bg-gradient-to-r from-navy via-brand-deep to-brand py-2 pr-2 pl-7 text-base font-semibold text-white"
               >
                 <LiquidFill className="bg-ink" />
-                Explore the modules
+                {solutionsHub.link.label}
                 <span className="grid size-12 place-items-center rounded-full bg-white text-ink">
                   <ArrowUpRight className="arrow-turn size-5" aria-hidden="true" />
                 </span>
@@ -149,184 +168,198 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 02 — Brand statement */}
+      {/* 03 — One agent, a dual role */}
       <section className="container-x py-20 sm:py-28">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
           <div>
-            <SectionHeader
-              eyebrow="The challenge"
-              title="Your Business Deserves More Than Disconnected Systems."
-              text="Growing businesses often run on a patchwork of tools. Each one works on its own, but together they create gaps, duplicate effort and delay decisions."
-            />
-            <Reveal delay={100}>
-              <p className="mt-6 max-w-xl leading-relaxed text-muted">
-                PAIRO replaces the patchwork with one unified platform, where finance, operations and people share the same
-                information and move in step, without the friction.
+            <SectionHeader eyebrow={dualRole.eyebrow} title={dualRole.title} text={home.builtBy} />
+            <Reveal delay={100} className="mt-8 rounded-[1.75rem] bg-white p-6 ring-1 ring-line">
+              <p className="text-xs font-semibold tracking-[0.2em] text-brand-deep uppercase">
+                {dualRole.accountant.role} · {dualRole.accountant.caption}
               </p>
+              <ul className="mt-4 grid gap-3">
+                {dualRole.accountant.items.map((item) => (
+                  <li key={item} className="flex items-center gap-3 font-medium">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-seal text-navy">
+                      <Check className="size-4" aria-hidden="true" />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </Reveal>
           </div>
           <ol className="grid gap-3">
-            {problems.map((p, i) => (
-              <Reveal as="li" key={p.title} delay={i * 100} className="flex gap-5 rounded-[1.75rem] bg-white p-6 ring-1 ring-line">
-                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-crimson/10 text-crimson">
-                  <X className="size-4" aria-hidden="true" />
+            <Reveal as="li" className="px-2 text-xs font-semibold tracking-[0.2em] text-brand-deep uppercase">
+              {dualRole.auditor.role} · {dualRole.auditor.caption}
+            </Reveal>
+            {dualRole.auditor.items.map((item, i) => (
+              <Reveal as="li" key={item} delay={i * 100} className="flex items-center gap-5 rounded-[1.75rem] bg-white p-6 ring-1 ring-line">
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand/10 text-brand">
+                  <Check className="size-4" aria-hidden="true" />
                 </span>
-                <div>
-                  <h3 className="font-semibold">{p.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted">{p.text}</p>
-                </div>
+                <h3 className="font-semibold">{item}</h3>
               </Reveal>
             ))}
-            <Reveal
-              as="li"
-              delay={300}
-              className="flex items-center gap-5 rounded-[1.75rem] p-6 text-white"
-              style={{ background: brandGradient }}
-            >
+            <Reveal as="li" delay={400} className="flex items-center gap-5 rounded-[1.75rem] p-6 text-white" style={{ background: brandGradient }}>
               <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white/15">
                 <img src={monogram} alt="" className="w-6" />
               </span>
               <div>
-                <h3 className="font-semibold">One connected system</h3>
-                <p className="mt-1 text-sm text-white/75">Every function on one platform, with one version of the truth.</p>
+                <h3 className="font-semibold">{home.liveAgent.label}</h3>
+                <p className="mt-1 text-sm text-white/75">{dualRole.outcomes.join(' · ')}</p>
               </div>
             </Reveal>
           </ol>
         </div>
       </section>
 
-      {/* 03 — ERP ecosystem */}
+      {/* 04 — One business day */}
+      <section className="container-x pb-20 sm:pb-28">
+        <SectionHeader eyebrow={agentDay.eyebrow} title={agentDay.title} align="center" />
+        <StepRow
+          steps={agentDay.events.map((e) => ({
+            label: e.time,
+            title: e.agent,
+            text: e.text,
+            flag: e.needsYou ? 'needs you' : undefined,
+          }))}
+        />
+        <Reveal className="mt-12 flex flex-wrap justify-center gap-2">
+          {agentDay.summary.map((s) => (
+            <span key={s} className="rounded-full bg-white px-4 py-2 text-sm font-semibold ring-1 ring-line">
+              {s}
+            </span>
+          ))}
+        </Reveal>
+      </section>
+
+      {/* 05 — Twelve agentic solutions */}
       <section id="ecosystem" className="container-x scroll-mt-24 pb-20 sm:pb-28">
-        <SectionHeader
-          eyebrow="The ERP ecosystem"
-          title="One Platform. A More Connected Business."
-          text="Each module is powerful on its own. Together, they share one data model, so every transaction, record and approval flows to the teams that need it."
-        />
-        <ModuleExplorer />
-      </section>
-
-      {/* 04 — AI differentiation */}
-      <AiSection
-        id="ai"
-        title="Intelligence That Works Behind Your Business."
-        text="AI in PAIRO is built into everyday work: answering questions, capturing data and surfacing what needs attention, so your teams can focus on decisions."
-      />
-
-      {/* 05 — How it works */}
-      <section className="container-x py-20 sm:py-28">
-        <SectionHeader
-          eyebrow="How it works"
-          title="From Business Complexity to Operational Clarity."
-          align="center"
-        />
-        <ol className="relative mt-14 grid gap-6 md:grid-cols-5 md:gap-4">
-          <span className="absolute top-7 right-[10%] left-[10%] hidden h-px bg-gradient-to-r from-brand via-brand-deep to-crimson md:block" aria-hidden="true" />
-          {steps.map((step, i) => (
-            <Reveal as="li" key={step.title} delay={i * 100} className="relative flex gap-5 md:flex-col md:items-center md:text-center">
-              <span className="relative grid size-14 shrink-0 place-items-center rounded-full bg-white text-lg font-semibold text-navy ring-1 ring-line">
-                0{i + 1}
-              </span>
-              <div>
-                <h3 className="text-lg font-semibold md:mt-5">{step.title}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-muted">{step.text}</p>
-              </div>
-            </Reveal>
-          ))}
-        </ol>
-      </section>
-
-      {/* 06 — Why PAIRO */}
-      <WhySection />
-
-      {/* 07 — Customer proof */}
-      <section className="container-x pb-20 sm:pb-28">
-        <SectionHeader eyebrow="Customer proof" title="Better Systems. Better Business Outcomes." />
-        <div className="mt-12 grid gap-4 lg:grid-cols-3">
-          {testimonials.map((t, i) => (
-            <Reveal
-              as="figure"
-              key={t.name}
-              delay={i * 100}
-              className={`flex flex-col justify-between rounded-[2rem] p-8 ${i === 0 ? 'bg-navy text-white' : 'bg-white ring-1 ring-line'}`}
-            >
-              <Quote className={`size-8 ${i === 0 ? 'text-crimson' : 'text-brand'}`} aria-hidden="true" />
-              <blockquote className={`mt-6 text-lg leading-relaxed ${i === 0 ? 'text-white' : 'text-ink'}`}>“{t.quote}”</blockquote>
-              <figcaption className="mt-8 border-t border-current/10 pt-5 text-sm">
-                <span className="block font-semibold">{t.name}</span>
-                <span className={i === 0 ? 'text-white/60' : 'text-muted'}>{t.company}</span>
-              </figcaption>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* 08 — Integrations */}
-      <section className="container-x pb-20 sm:pb-28">
-        <div className="grid items-center gap-12 rounded-[2.5rem] bg-seal-soft p-6 ring-1 ring-seal sm:p-12 lg:grid-cols-2">
-          <div>
-            <SectionHeader
-              eyebrow="Integrations"
-              title="Works With the Tools Your Business Relies On."
-              text="PAIRO connects with the systems around it, so information keeps moving in and out of your ERP without manual exports and imports."
-            />
-            <Reveal delay={100}>
-              <Button to="/contact?intent=sales" variant="dark" className="mt-8">
-                Ask about an integration
-              </Button>
-            </Reveal>
-          </div>
-          <Reveal delay={100} className="grid grid-cols-3 gap-3">
-            {integrations.slice(0, 4).map((item) => (
-              <IntegrationTile key={item.name} item={item} />
-            ))}
-            <div
-              className="grid aspect-square place-items-center rounded-[1.5rem] shadow-xl shadow-brand/30"
-              style={{ background: brandGradient }}
-            >
-              <img src={monogram} alt="PAIRO" className="w-1/2" />
-            </div>
-            {integrations.slice(4).map((item) => (
-              <IntegrationTile key={item.name} item={item} />
-            ))}
-          </Reveal>
-        </div>
-      </section>
-
-      {/* 09 — Insights */}
-      <section className="container-x pb-4">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHeader eyebrow="Insights" title="Ideas for a Smarter Way to Do Business." />
+          <SectionHeader eyebrow={solutionsHub.eyebrow} title={solutionsHub.homeTitle} text={solutionsHub.lead} />
           <Reveal>
-            <Button to="/insights" variant="outline">
-              All insights
+            <Button to={solutionsHub.link.to} variant="outline">
+              {solutionsHub.link.label}
             </Button>
           </Reveal>
         </div>
-        <div className="mt-12 grid gap-4 md:grid-cols-3">
-          {articles
-            .filter((a) => a.featured)
-            .map((a, i) => (
-              <Reveal key={a.slug} delay={i * 100}>
-                <ArticleCard article={a} index={i} />
-              </Reveal>
+        <ModuleExplorer />
+      </section>
+
+      {/* 06 — Parrot AI */}
+      <AiSection
+        id="parrot"
+        eyebrow={parrotIntro.eyebrow}
+        title={parrotIntro.title}
+        items={parrotIntro.features}
+        closing="Runs on PairO's own model. Your data is never sent to an external AI."
+        cta={parrotIntro.link}
+      />
+
+      {/* 06b — Parrot AI, live */}
+      <section className="container-x py-6">
+        <Reveal className="grid gap-10 rounded-[2.5rem] bg-white p-6 ring-1 ring-line sm:p-12 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-16">
+          <div>
+            <SectionHeader eyebrow="Parrot AI · live" title="Ask. Get answers straight from your books." />
+            <ul className="mt-8 grid gap-2">
+              {homeChat
+                .filter((m) => m.from === 'you' && m.text && m.text !== 'Confirm')
+                .map((m) => (
+                  <li key={m.text} className="w-fit rounded-full bg-mist px-4 py-2 text-sm font-medium ring-1 ring-line">
+                    {m.voice ? m.text : `“${m.text}”`}
+                  </li>
+                ))}
+            </ul>
+            <Button to="/parrot-ai#parrot-live" variant="dark" className="mt-8">
+              See Parrot AI in action
+            </Button>
+          </div>
+          <ParrotChat messages={homeChat} />
+        </Reveal>
+      </section>
+
+      {/* 07 — Real-time Health Check */}
+      <div className="pt-20 sm:pt-28">
+        <WhySection
+          id="health"
+          eyebrow={healthCheck.homeEyebrow}
+          title={
+            <>
+              An auditor that is <span className="text-brand">always in the room.</span>
+            </>
+          }
+          lead={
+            <p>
+              Health <span className="text-seal-bright">{healthCheck.score}</span> · {healthCheck.counts.clear} ·{' '}
+              {healthCheck.counts.warnings} · {healthCheck.counts.problems}. {healthCheck.live}.
+            </p>
+          }
+          items={healthCards}
+        />
+      </div>
+
+      {/* 07b — Health Check, live, and custom checks */}
+      <section className="container-x pb-20 sm:pb-28">
+        <Reveal className="grid gap-10 rounded-[2.5rem] bg-white p-6 ring-1 ring-line sm:p-12 lg:grid-cols-2 lg:items-start lg:gap-12">
+          <HealthPanel />
+          <div className="flex flex-col gap-6">
+            <SectionHeader eyebrow={healthCheck.custom.eyebrow} title={healthCheck.custom.homeTitle} />
+            <ul className="flex flex-wrap gap-2">
+              {healthCheck.custom.highlights.map((item) => (
+                <li key={item} className="flex items-center gap-1.5 rounded-full bg-mist px-4 py-2 text-sm font-medium ring-1 ring-line">
+                  <Check className="size-3.5 text-brand" aria-hidden="true" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <CustomCheckCard />
+            <div>
+              <Button to={healthCheck.link.to} variant="dark">
+                {healthCheck.link.label}
+              </Button>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* 08 — Onboarding */}
+      <OnboardingSection />
+
+      {/* 09 — Statutory compliance */}
+      <section className="container-x py-20 sm:py-28">
+        <div className="grid items-center gap-12 rounded-[2.5rem] bg-seal-soft p-6 ring-1 ring-seal sm:p-12 lg:grid-cols-2">
+          <div>
+            <SectionHeader eyebrow={compliance.eyebrow} title={compliance.homeTitle} text={compliance.lead} />
+            <Reveal delay={100}>
+              <Button to={compliance.link.to} variant="dark" className="mt-8">
+                {compliance.link.label}
+              </Button>
+            </Reveal>
+          </div>
+          <Reveal delay={100} className="grid grid-cols-2 gap-3">
+            {compliance.refs.map((r, i) => (
+              <Link
+                key={r.name}
+                to={`${compliance.link.to}#${compliance.acts[i].id}`}
+                className={`flex aspect-[4/3] flex-col justify-between rounded-[1.5rem] p-5 transition hover:-translate-y-1 ${
+                  i === 0 ? 'text-white shadow-xl shadow-brand/30' : 'bg-white ring-1 ring-line'
+                }`}
+                style={i === 0 ? { background: brandGradient } : undefined}
+              >
+                <span className={`text-xs font-semibold ${i === 0 ? 'text-seal' : 'text-crimson'}`}>0{i + 1}</span>
+                <span>
+                  <span className="block text-lg font-semibold sm:text-xl">{r.name}</span>
+                  <span className={`mt-1 block text-xs sm:text-sm ${i === 0 ? 'text-white/70' : 'text-muted'}`}>{r.act}</span>
+                </span>
+              </Link>
             ))}
+          </Reveal>
         </div>
       </section>
 
-      {/* 10 — Final CTA */}
-      <CtaBanner
-        title="Ready to Bring Your Business Together?"
-        text="See how PAIRO connects finance, stock and people in one calm, intelligent system."
-      />
+      {/* 10 — Global conversion */}
+      <CtaBanner title={globalCta.title} primary={globalCta.primary} secondary={globalCta.secondary} />
     </>
-  )
-}
-
-function IntegrationTile({ item }: { item: Integration }) {
-  return (
-    <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-[1.5rem] bg-white p-3 text-center ring-1 ring-line">
-      <item.icon className="size-6 text-brand" aria-hidden="true" />
-      <span className="text-xs font-semibold sm:text-sm">{item.name}</span>
-    </div>
   )
 }

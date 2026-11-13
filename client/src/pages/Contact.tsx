@@ -9,9 +9,9 @@ import { company } from '../content/site'
 import type { Intent } from '../lib/api'
 
 const intros: Record<Intent, string> = {
-  demo: 'Book a personalised demo and see how PAIRO would work for your business, with your processes in mind.',
+  demo: 'Book a personalised demo and see how PairO would work for your business, with your processes in mind.',
   sales: 'Talk to our sales team about modules, plans and what the right setup for your business would cost.',
-  general: 'Questions about PAIRO, a project in mind, or just exploring? Tell us a little about your business and we will be in touch.',
+  general: 'Questions about PairO, a project in mind, or just exploring? Tell us a little about your business and we will be in touch.',
 }
 
 export default function Contact() {
@@ -29,8 +29,8 @@ export default function Contact() {
   return (
     <>
       <Seo
-        title="Contact PairoApps | Talk to Our ERP Software Team"
-        description="Book a PAIRO demo or talk to our ERP software team about your business, modules, pricing and implementation."
+        title="Book a demo | Contact PairO"
+        description="Book a demo of PairO, the agentic ERP built for Indian business, or talk to our team about packs and pricing."
         path="/contact"
       />
 

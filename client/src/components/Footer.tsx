@@ -4,7 +4,8 @@ import Logo from './Logo'
 import Button from './Button'
 import wordmarkWhite from '../assets/brand/wordmark-white.png'
 import oMask from '../assets/brand/wordmark-o-mask.png'
-import { company, modules, nav } from '../content/site'
+import { company, demoLink, nav } from '../content/site'
+import { solutionPath, solutions } from '../content/solutions'
 
 const year = new Date().getFullYear()
 
@@ -28,53 +29,43 @@ export default function Footer() {
               {company.promise}
             </p>
           </div>
-          <Button to="/contact?intent=demo" variant="light">
+          <Button to={demoLink} variant="light">
             Book a demo
           </Button>
         </div>
 
         <div className="relative grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
-          <FooterColumn title="Company">
+          <FooterColumn title="PairO">
             {nav.map((item) => (
               <FooterLink key={item.to} to={item.to}>
                 {item.label}
               </FooterLink>
             ))}
           </FooterColumn>
-          <FooterColumn title="Platform">
-            {modules.slice(0, 6).map((m) => (
-              <FooterLink key={m.id} to="/services#modules">
-                {m.name}
+          <FooterColumn title="Agentic solutions">
+            {solutions.slice(0, 6).map((s) => (
+              <FooterLink key={s.slug} to={solutionPath(s)}>
+                {s.name}
+              </FooterLink>
+            ))}
+          </FooterColumn>
+          <FooterColumn title="More agents">
+            {solutions.slice(6).map((s) => (
+              <FooterLink key={s.slug} to={solutionPath(s)}>
+                {s.name}
               </FooterLink>
             ))}
           </FooterColumn>
           <FooterColumn title="Contact">
-            <li>
-              <a href={`mailto:${company.email}`} className="text-white/70 hover:text-white">
-                {company.email}
-              </a>
-            </li>
-            <li>
-              <a href={`tel:${company.phone.replace(/\s/g, '')}`} className="text-white/70 hover:text-white">
-                {company.phone}
-              </a>
-            </li>
-            <li className="text-white/50">{company.hours}</li>
-          </FooterColumn>
-          <FooterColumn title="Follow">
-            {company.social.map((s) => (
-              <li key={s.label}>
-                <a href={s.href} target="_blank" rel="noreferrer" className="text-white/70 hover:text-white">
-                  {s.label}
-                </a>
-              </li>
-            ))}
+            {/* placeholder: the source document shows [email] and [phone] — replace before launch */}
+            <li className="text-white/70">{company.email}</li>
+            <li className="text-white/70">{company.phone}</li>
           </FooterColumn>
         </div>
 
         <div className="relative flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/50 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {year} {company.legalName}. All rights reserved.
+            © {year} {company.legalName}
           </p>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:text-white">
@@ -108,7 +99,7 @@ function FooterColumn({ title, children }: { title: string; children: ReactNode 
 function FooterLink({ to, children }: { to: string; children: ReactNode }) {
   return (
     <li>
-      <Link to={to} className="text-white/70 hover:text-white">
+      <Link to={to} className="-my-1.5 inline-block py-1.5 text-white/70 hover:text-white">
         {children}
       </Link>
     </li>

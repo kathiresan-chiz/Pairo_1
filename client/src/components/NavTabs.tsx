@@ -19,7 +19,7 @@ export default function NavTabs() {
           <NavLink
             to={item.to}
             end={item.to === '/'}
-            className={`block rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 ${
+            className={`block rounded-full px-3 py-2 text-[13px] font-medium whitespace-nowrap transition-colors duration-300 xl:px-4 xl:text-sm ${
               i === activeIndex ? `${liquidColor(i).text} delay-300` : 'text-muted hover:text-ink'
             }`}
           >

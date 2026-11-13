@@ -4,7 +4,7 @@ import { Menu, X } from 'lucide-react'
 import Logo from './Logo'
 import Button from './Button'
 import NavTabs from './NavTabs'
-import { nav } from '../content/site'
+import { demoLink, nav, signIn } from '../content/site'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -28,7 +28,7 @@ export default function Navbar() {
             scrolled || open ? 'bg-white/85 shadow-lg ring-1 shadow-navy/5 ring-line backdrop-blur-md' : ''
           }`}
         >
-          <Link to="/" onClick={close} aria-label="PAIRO home" className="shrink-0">
+          <Link to="/" onClick={close} aria-label="PairO home" className="shrink-0">
             <Logo glow={false} className="h-8 sm:h-9" />
           </Link>
 
@@ -36,12 +36,12 @@ export default function Navbar() {
 
           <div className="flex items-center gap-2">
             <Link
-              to="/contact?intent=sales"
+              to={signIn.to}
               className="hidden rounded-full px-4 py-2 text-sm font-semibold text-ink hover:bg-white xl:block"
             >
-              Talk to sales
+              {signIn.label}
             </Link>
-            <Button to="/contact?intent=demo" className="hidden sm:inline-flex">
+            <Button to={demoLink} className="whitespace-nowrap max-[359px]:hidden">
               Book a demo
             </Button>
             <button
@@ -78,9 +78,14 @@ export default function Navbar() {
                 </li>
               ))}
             </ul>
-            <Button to="/contact?intent=demo" onClick={close} className="mt-3 w-full">
-              Book a demo
-            </Button>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <Button to={signIn.to} onClick={close} variant="outline" arrow={false} className="w-full justify-center">
+                {signIn.label}
+              </Button>
+              <Button to={demoLink} onClick={close} className="w-full">
+                Book a demo
+              </Button>
+            </div>
           </div>
         )}
       </div>

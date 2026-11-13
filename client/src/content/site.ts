@@ -1,446 +1,426 @@
-// All website copy lives here so it can be edited without touching layout code.
-// Items marked `placeholder: true` must be confirmed by the PAIRO team before launch
-// (see section 9 of the content architecture document).
-
-import {
-  Banknote,
-  Boxes,
-  BarChart3,
-  Briefcase,
-  FileCheck2,
-  FolderKanban,
-  ShoppingCart,
-  Users,
-  Sparkles,
-  ScanText,
-  Workflow,
-  TrendingUp,
-  FileBarChart,
-  Link2,
-  Database,
-  Eye,
-  Layers,
-  MousePointerClick,
-  Building2,
-  CreditCard,
-  Mail,
-  Store,
-  Sheet,
-  Landmark,
-  Settings2,
-  ArrowRightLeft,
-  GraduationCap,
-  LifeBuoy,
-  Rocket,
-  Contact,
-  Cloud,
-} from 'lucide-react'
+// All website copy lives here (and in solutions.ts / parrot.ts) so it can be edited
+// without touching layout code. Source: "PairO Website Content & Content Architecture"
+// (modern business edition, 13 November 2026).
+// Items marked `placeholder` must be confirmed by the PairO team before launch.
 
 export const company = {
-  name: 'PAIRO',
-  legalName: 'PairoApps',
-  tagline: 'Business, Connected. Intelligence, Built In.',
-  promise: 'One connected business. Smarter decisions. Better growth.',
+  name: 'PairO',
+  legalName: 'PairO',
+  tagline: 'The agentic ERP built for Indian business',
+  promise: 'The agentic ERP built for Indian business.',
   description:
-    'PAIRO is an AI-powered ERP platform that brings finance, operations, people and processes into one connected system for growing businesses.',
-  // placeholder: replace with verified contact details
-  email: 'hello@pairoapps.com',
-  phone: '+91 00000 00000',
+    'PairO is the agentic ERP for Indian businesses: a dedicated accountant at work for your business around the clock, fully automated, 24×7.',
+  // placeholder: the source document shows [email] and [phone]. Replace with approved contact details.
+  email: '[email]',
+  phone: '[phone]',
   address: 'Office address to be confirmed',
   hours: 'Monday – Friday, 9:00 – 18:00',
-  social: [
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
-    { label: 'X', href: 'https://x.com/' },
-    { label: 'YouTube', href: 'https://www.youtube.com/' },
-  ],
+  social: [] as { label: string; href: string }[],
 }
+
+// placeholder: the sign-in destination is not defined in the source document.
+export const signIn = { label: 'Sign in', to: '/' }
+export const demoLink = '/contact?intent=demo'
 
 export const nav = [
   { label: 'Home', to: '/' },
-  { label: 'About', to: '/about' },
-  { label: 'Services', to: '/services' },
+  { label: 'Agentic solutions', to: '/solutions' },
+  { label: 'Parrot AI', to: '/parrot-ai' },
+  { label: 'Health Check', to: '/health-check' },
+  { label: 'Compliance', to: '/compliance' },
   { label: 'Pricing', to: '/pricing' },
-  { label: 'Insights', to: '/insights' },
-  { label: 'Contact', to: '/contact' },
 ]
 
-export const tickerWords = [
-  'Finance',
-  'Inventory',
-  'Sales & CRM',
-  'Procurement',
-  'People',
-  'Tax & Compliance',
-  'Projects',
-  'Analytics',
-  'Automation',
-  'Growth',
-]
+export const globalCta = {
+  title: 'Put the accountant that never stops to work for you.',
+  primary: { label: 'Start for free', to: '/pricing#packs' },
+  secondary: { label: 'View pricing', to: '/pricing#compare' },
+}
 
-// placeholder: validate the final module list with the product team
-export const modules = [
-  {
-    id: 'finance',
-    icon: Banknote,
-    name: 'Finance & Accounting',
-    short: 'Ledgers, receivables, payables and reporting in one place.',
-    detail:
-      'Keep every transaction, ledger and reconciliation in one source of truth. Sales, purchases and payroll post into finance automatically, so the numbers are ready when you need them.',
-    points: ['General ledger & journals', 'Receivables and payables', 'Bank reconciliation', 'Financial statements'],
-  },
-  {
-    id: 'sales',
-    icon: Briefcase,
-    name: 'Sales & CRM',
-    short: 'From first conversation to final invoice.',
-    detail:
-      'Track leads, quotes and orders alongside the customer history. When a deal closes, the order, the stock reservation and the invoice follow without re-keying.',
-    points: ['Leads and pipeline', 'Quotations and orders', 'Customer history', 'Invoicing'],
-  },
-  {
-    id: 'purchase',
-    icon: ShoppingCart,
-    name: 'Purchase Management',
-    short: 'Requests, approvals and purchase orders that stay in step.',
-    detail:
-      'Raise requests, route approvals and issue purchase orders with supplier terms at hand. Goods received update stock and payables at the same time.',
-    points: ['Purchase requests', 'Approval workflows', 'Supplier management', 'Goods received'],
-  },
-  {
-    id: 'inventory',
-    icon: Boxes,
-    name: 'Inventory Management',
-    short: 'Live stock across every location.',
-    detail:
-      'See stock levels, movements and valuation as they change. Reorder points and transfers keep the right items where they are needed.',
-    points: ['Multi-location stock', 'Stock movements', 'Reorder levels', 'Valuation'],
-  },
-  {
-    id: 'hr',
-    icon: Users,
-    name: 'HR Management',
-    short: 'People, attendance and payroll, connected to finance.',
-    detail:
-      'Manage employee records, attendance and leave in one place. Payroll runs from the same data and posts straight into the books.',
-    points: ['Employee records', 'Attendance & leave', 'Payroll', 'Self-service'],
-  },
-  {
-    id: 'tax',
-    icon: FileCheck2,
-    name: 'Tax & Compliance',
-    short: 'Tax-ready records from every transaction.',
-    detail:
-      'Apply tax rules at the point of transaction and keep records organised for filing and audit, so compliance is part of daily work rather than a month-end scramble.',
-    points: ['Tax configuration', 'Compliance reports', 'Audit trail', 'Filing support'],
-  },
-  {
-    id: 'projects',
-    icon: FolderKanban,
-    name: 'Projects & Budgets',
-    short: 'Plan work and track spend against budget.',
-    detail:
-      'Set budgets, assign resources and track costs as they happen, with project spend linked directly to purchasing and finance.',
-    points: ['Budget planning', 'Cost tracking', 'Resource allocation', 'Project reports'],
-  },
-  {
-    id: 'analytics',
-    icon: BarChart3,
-    name: 'Analytics & Reports',
-    short: 'Clear dashboards built on live data.',
-    detail:
-      'Because every module shares one data model, reports draw from the full picture. Build dashboards for each team and share them in a click.',
-    points: ['Live dashboards', 'Custom reports', 'Scheduled exports', 'Role-based views'],
-  },
-]
+/* ------------------------------------------------------------------ Home */
 
-// placeholder: include only AI capabilities confirmed by the product team
-// `fill` (0–1) sets the bar in the AI section; without it the bar shows the item's position in the list.
-export const aiCapabilities = [
-  {
-    icon: Sparkles,
-    title: 'AI-powered assistance',
-    text: 'Ask questions about your business in plain language and get answers drawn from your own data.',
-    fill: 0.95,
-  },
-  {
-    icon: ScanText,
-    title: 'Intelligent document processing',
-    text: 'Capture details from invoices and receipts so teams spend less time on manual entry.',
-    fill: 0.9,
-  },
-  {
-    icon: Workflow,
-    title: 'Workflow automation',
-    text: 'Automate supported, repetitive steps such as approvals, reminders and recurring entries.',
-    fill: 0.85,
-  },
-  {
-    icon: TrendingUp,
-    title: 'Predictive insights',
-    text: 'Spot trends in sales, stock and cash flow early, so decisions are made ahead of time.',
-  },
-  {
-    icon: FileBarChart,
-    title: 'Automated reporting',
-    text: 'Generate recurring reports on schedule and send them to the people who need them.',
-  },
-]
+export const home = {
+  eyebrow: 'The agentic ERP built for Indian business',
+  title: ['The agentic', 'accountant that', 'closes your books.'],
+  lead: 'Fully automated, 24×7. A dedicated accountant at work for your business around the clock.',
+  onboardingStats: [
+    { value: '3 days', label: 'migration' },
+    { value: '2 weeks', label: 'to go live' },
+    { value: 'Day 0', label: 'month-end close' },
+  ],
+  agentTicker: ['Banking', 'Bills', 'Sales', 'Collections', 'GST & TDS', 'Audit'],
+  liveAgent: { label: 'PairO agent', status: 'at work · 24×7', event: 'Banking agent · 08:02', detail: '58 bank lines matched' },
+  agentResults: [
+    { agent: 'Banking agent', value: '58', label: 'bank lines matched' },
+    { agent: 'Collection agent', value: '₹2.3 L', label: 'collected today' },
+    { agent: 'Audit agent', value: '70/70', label: 'checks clear' },
+  ],
+  builtBy: 'Built by accountants, for business owners and accountants alike.',
+}
 
-export const steps = [
-  { title: 'Connect', text: 'Bring your business operations onto one platform.' },
-  { title: 'Centralise', text: 'Keep information in a single, shared source of truth.' },
-  { title: 'Automate', text: 'Let supported workflows run without manual effort.' },
-  { title: 'Understand', text: 'Access meaningful insights on live data.' },
-  { title: 'Decide', text: 'Make informed decisions with confidence.' },
-]
+export const dualRole = {
+  eyebrow: 'One agent · a dual role',
+  title: 'Your accountant. Your auditor. One agent.',
+  accountant: {
+    role: 'Accountant',
+    caption: 'gets the work done',
+    items: ['Raises and posts every sales invoice', 'Books every supplier bill', 'Matches every bank line', 'Brings the month to a close'],
+  },
+  auditor: {
+    role: 'Auditor',
+    caption: 'verifies it in real time',
+    items: ['GST rate and place of supply verified', 'Duplicate and blocked ITC flagged', 'Double payments prevented', 'Health Check · 70 checks'],
+  },
+  outcomes: ['Verified', 'Complete audit', 'Audit trail', 'No year-end rush'],
+}
 
-// `highlight` is a phrase from `text` shown in the accent colour; `to` is where the card's arrow leads.
-export const differentiators = [
-  {
-    icon: Link2,
-    title: 'Connected business management',
-    text: 'Every function shares one data model, so work flows between teams instead of between spreadsheets.',
-    highlight: 'one data model',
-    to: '/services#modules',
-  },
-  {
-    icon: Sparkles,
-    title: 'Intelligent automation',
-    text: 'Routine tasks run in the background, leaving your people free for the work that needs judgement.',
-    highlight: 'Routine tasks run in the background',
-    to: '/services#ai',
-  },
-  {
-    icon: Database,
-    title: 'Centralised information',
-    text: 'One place for transactions, records and documents, with a clear history behind every number.',
-    highlight: 'a clear history behind every number',
-    to: '/services#modules',
-  },
-  {
-    icon: Eye,
-    title: 'Operational visibility',
-    text: 'See what is happening across finance, stock and people as it happens, not at month end.',
-    highlight: 'as it happens',
-    to: '/services#modules',
-  },
-  {
-    icon: Layers,
-    title: 'Flexible, scalable architecture',
-    text: 'Start with the modules you need today and add more as the business grows.',
-    highlight: 'add more as the business grows',
-    to: '/pricing',
-  },
-  {
-    icon: MousePointerClick,
-    title: 'User-friendly experience',
-    text: 'A calm, consistent interface that teams can pick up quickly and use every day.',
-    highlight: 'pick up quickly',
-    to: '/contact?intent=demo',
-  },
-]
+export const agentDay = {
+  eyebrow: 'The agentic accountant · a coordinated team of agents',
+  title: 'One business day. Zero follow-ups.',
+  events: [
+    { time: '08:02', agent: 'Banking agent', text: '58 bank lines matched' },
+    { time: '08:40', agent: 'Bills agent', text: '6 bills captured from photos' },
+    { time: '09:00', agent: 'Sales agent', text: '14 invoices raised and sent' },
+    { time: '10:15', agent: 'Approval agent', text: '1 decision awaiting you', needsYou: true },
+    { time: '18:00', agent: 'Close agent', text: 'Day 0 books ready to close' },
+  ],
+  summary: ['5 agents at work', '1 decision for you', 'Books closed the very same day'],
+}
 
-// placeholder: replace with real, approved customer testimonials
-export const testimonials = [
-  {
-    quote:
-      'We closed our books in days instead of weeks once finance and inventory were working from the same numbers.',
-    name: 'Finance Director',
-    company: 'Manufacturing company',
-    placeholder: true,
-  },
-  {
-    quote:
-      'Purchase approvals used to live in email threads. Now every request has an owner, a status and a history.',
-    name: 'Operations Manager',
-    company: 'Distribution business',
-    placeholder: true,
-  },
-  {
-    quote:
-      'Our team finally has one place to look. The dashboards answer questions that used to take a full afternoon.',
-    name: 'Managing Director',
-    company: 'Retail group',
-    placeholder: true,
-  },
-]
+export const onboarding = {
+  eyebrow: 'Onboarding',
+  title: 'Migrated in 3 days. Live in 2 weeks.',
+  timeline: [
+    { when: 'Day 1', what: 'Master data' },
+    { when: 'Day 2', what: 'Opening balances and open bills' },
+    { when: 'Day 3', what: 'Reconciled to your legacy books' },
+    { when: 'Week 1–2', what: 'Team and approvals set up' },
+    { when: 'Week 2', what: 'Live' },
+  ],
+}
 
-// placeholder: replace categories with confirmed integrations
-export const integrations = [
-  { icon: Landmark, name: 'Banking' },
-  { icon: CreditCard, name: 'Payment gateways' },
-  { icon: Store, name: 'E-commerce' },
-  { icon: Mail, name: 'Email & calendar' },
-  { icon: Sheet, name: 'Spreadsheets' },
-  { icon: Building2, name: 'Tax portals' },
-  { icon: Contact, name: 'CRM tools' },
-  { icon: Cloud, name: 'Cloud storage' },
-]
+/* ---------------------------------------------------------- Parrot AI (home) */
 
-export const philosophy = [
-  { title: 'Connection', text: 'Bring business functions together so information moves with the work.' },
-  { title: 'Intelligence', text: 'Make technology more useful, so it supports decisions rather than adding steps.' },
-  { title: 'Progress', text: 'Help organisations improve continuously, one better process at a time.' },
-]
+export const parrotIntro = {
+  eyebrow: 'Parrot AI · your intelligent accounting assistant',
+  title: 'Just ask. Parrot AI takes care of the entry.',
+  features: [
+    { title: 'Text or voice', text: 'Type a question or hold to speak, and Parrot AI drafts the entry.', fill: 0.95 },
+    { title: 'English · Tamil · Hindi', text: 'Speak your language, including everyday Tanglish and Hindi.', fill: 0.85 },
+    { title: 'One-tap confirmation', text: 'Nothing is posted until you confirm the draft card.', fill: 0.9 },
+    { title: 'No data shared with any external AI', text: "Runs on PairO's own model. Your data is never sent to an external AI.", fill: 1 },
+  ],
+  link: { label: 'Discover everything Parrot AI can do', to: '/parrot-ai' },
+}
 
-// placeholder: validate service areas
-export const services = [
-  { icon: Rocket, title: 'ERP implementation', text: 'A structured roll-out plan, from discovery to go-live, shaped around how your teams work.' },
-  { icon: Settings2, title: 'System configuration', text: 'Workflows, approvals, roles and reports set up to match your processes.' },
-  { icon: ArrowRightLeft, title: 'Data migration', text: 'Careful transfer of masters, balances and history from your existing systems.' },
-  { icon: Link2, title: 'Third-party integrations', text: 'Connect PAIRO with the tools your business already relies on.' },
-  { icon: GraduationCap, title: 'User training', text: 'Role-based training so every team member is confident from day one.' },
-  { icon: LifeBuoy, title: 'Technical support', text: 'Responsive help from a team that knows your setup.' },
-]
+/* ----------------------------------------------------------- Health Check */
 
-// placeholder: proposed plans, not confirmed commercial packages
-export const plans = [
-  {
-    name: 'Essential',
-    audience: 'For small businesses',
-    text: 'The core modules to run finance, sales and stock from one place.',
-    features: ['Finance & Accounting', 'Sales & Invoicing', 'Inventory', 'Standard reports', 'Email support'],
-  },
-  {
-    name: 'Professional',
-    audience: 'For growing businesses',
-    text: 'More modules, automation and insight as your teams and volumes grow.',
-    features: ['Everything in Essential', 'Purchase & HR modules', 'Workflow automation', 'AI-powered assistance', 'Priority support'],
-    featured: true,
-  },
-  {
-    name: 'Enterprise',
-    audience: 'For large or complex organisations',
-    text: 'A tailored ecosystem for multiple entities, locations and integrations.',
-    features: ['Everything in Professional', 'Multi-entity & multi-location', 'Custom integrations', 'Dedicated implementation', 'Account manager'],
-  },
-]
+export type CheckStatus = 'ok' | 'warn' | 'fail'
 
-export const pricingFactors = [
-  'Number of users',
-  'Selected ERP modules',
-  'Implementation requirements',
-  'Integrations',
-  'Support requirements',
-]
+export const healthCheck = {
+  eyebrow: 'Real-time Health Check',
+  homeEyebrow: 'Real-time Health Check · your audit, running continuously',
+  homeTitle: 'An auditor that is always in the room.',
+  title: 'Your auditor, always on.',
+  lead: '70 checks across 12 areas of your live books — run at any time, in seconds. Add your own rules on top.',
+  tags: ['70 built-in checks', 'Custom checks', 'Alerts'],
+  ticker: ['Trial balance', 'Numbering', 'Duplicate bill', 'TDS ties', 's.17(5) ITC', 'Stock value', 'Cash limit', 'Locked periods'],
+  stats: [
+    { value: '70', label: 'built-in checks' },
+    { value: '12', label: 'audit areas covered' },
+    { value: 'Live', label: 'with every posting' },
+  ],
+  score: 96,
+  live: 'Live · verified as you post',
+  scope: '70 checks · 12 areas',
+  counts: { clear: '67 clear', warnings: '2 warnings', problems: '1 problem' },
+  checks: [
+    { status: 'ok', name: 'Trial balance balances', result: 'Dr = Cr' },
+    { status: 'ok', name: 'Numbering gaps', result: 'none' },
+    { status: 'warn', name: 'Duplicate purchase bills', result: '2 likely' },
+    { status: 'ok', name: 'GSTR-3B, GSTR-1 and books agree', result: 'tied' },
+    { status: 'fail', name: 'ITC on blocked heads · s.17(5)', result: '₹18,400' },
+    { status: 'ok', name: 'TDS register equals ledger', result: 'tied' },
+    { status: 'ok', name: 'Stock value equals inventory ledgers', result: 'tied' },
+    { status: 'warn', name: 'Cash over limit · s.40A(3)', result: '1 entry' },
+    { status: 'ok', name: 'Entries in locked periods', result: 'none' },
+  ] as { status: CheckStatus; name: string; result: string }[],
+  alert: {
+    title: 'ITC on blocked heads · s.17(5)',
+    text: 'ITC of ₹18,400 claimed on motor car repairs. Reverse it before filing GSTR-3B.',
+    action: 'Resolve now',
+  },
+  link: { label: 'Explore every check', to: '/health-check' },
+  areas: [
+    { name: 'Books', count: 10, text: 'Trial balance, numbering gaps and locked periods' },
+    { name: 'Duplicates', count: 7, text: 'Bills, invoices, parties and items' },
+    { name: 'GST', count: 8, text: '3B vs 1 vs books, 2B, s.17(5)' },
+    { name: 'TDS', count: 7, text: 'Sections, PAN and register vs ledger' },
+    { name: 'Inventory', count: 7, text: 'Negative, stale and expiring stock' },
+    { name: 'Manufacturing', count: 12, text: 'BOM loops, WIP and variances' },
+    { name: 'Sales & purchase', count: 5, text: 'Open items and settlements' },
+    { name: 'Fixed assets', count: 3, text: 'Register vs ledger, and depreciation' },
+    { name: 'Time & billing', count: 6, text: 'Unbilled hours and rates' },
+    { name: 'Banking', count: 1, text: 'Unreconciled balances' },
+    { name: 'Platform', count: 4, text: 'Access, approvals and setup' },
+  ],
+  custom: {
+    eyebrow: 'Custom checks',
+    homeTitle: 'Your rules. Enforced every day.',
+    title: 'Build the checks your auditor would run.',
+    steps: ['Select data', 'Define the rule', 'Set severity', 'Configure alerts'],
+    highlights: ['Any rule, zero code', 'Severity you define', 'Alerts routed to the right people', 'Fine-tune the built-in checks'],
+    features: [
+      { title: 'Any rule', text: 'Applied to rows or totals — for example, "cash expense over ₹10,000 a day".' },
+      { title: 'Fine-tune built-ins', text: 'Switch off, or adjust severity or threshold. Every change is audited.' },
+      { title: 'Alerts', text: 'By email and in-app, daily or weekly.' },
+    ],
+    note: 'Professional Plus: up to 10 custom checks · Enterprise: unlimited. Built-in checks are included in every pack.',
+    builder: {
+      title: 'Create a custom check',
+      plans: 'Professional Plus · Enterprise',
+      fields: [
+        { label: 'Examine', value: 'Sales invoices' },
+        { label: 'When', value: '> 15%' },
+        { label: 'Severity', value: 'Warning' },
+        { label: 'Notify', value: 'Owner, Accounts head · daily 8 am' },
+      ],
+      result: '3 invoices',
+    },
+  },
+}
 
-export const faqs = [
-  {
-    q: 'How is ERP pricing calculated?',
-    a: 'Pricing depends on the number of users, the modules you select, implementation needs, integrations and the level of support. We prepare a clear quote after understanding your requirements.',
-  },
-  {
-    q: 'Can I choose individual modules?',
-    a: 'Yes. You can start with the modules you need now and add more as your business grows.',
-  },
-  {
-    q: 'Is implementation included?',
-    a: 'Implementation is scoped with each plan. Your quote will set out exactly what is included, from configuration to data migration and training.',
-  },
-  {
-    q: 'Can I upgrade my plan?',
-    a: 'Yes. You can move to a higher plan or add modules and users at any time.',
-  },
-  {
-    q: 'Does PAIRO support integrations?',
-    a: 'PAIRO can connect with the tools your business relies on. Tell us what you use and we will confirm the options available.',
-  },
-  {
-    q: 'Is product training available?',
-    a: 'Yes. Role-based training is available so every team can use PAIRO confidently.',
-  },
-]
+/* ------------------------------------------------------------- Compliance */
 
-export const insightCategories = [
-  'ERP & Enterprise Technology',
-  'Artificial Intelligence',
-  'Business Automation',
-  'Finance & Accounting',
-  'Operations & Management',
-  'Industry Perspectives',
-]
+export const compliance = {
+  eyebrow: 'Built deep for Indian compliance',
+  homeTitle: 'Statutory compliance, built in.',
+  title: 'Statutory compliance, built in.',
+  lead: 'GST, TDS under the Income-tax Act 2025, the Companies Act and MSME — verified as you post, and ready ahead of every due date.',
+  tags: ['GST', 'TDS · TCS', 'Schedule III', 'MSME'],
+  link: { label: 'Explore compliance in depth', to: '/compliance' },
+  calendar: {
+    month: 'November 2026',
+    title: 'Compliance calendar',
+    // 1 November 2026 falls on a Sunday
+    firstWeekday: 0,
+    days: 30,
+    due: { 7: 'TDS', 11: 'GSTR-1', 20: 'GSTR-3B' } as Record<number, string>,
+    legend: [
+      { label: 'TDS challan', date: '7 Nov' },
+      { label: 'GSTR-1', date: '11 Nov' },
+      { label: 'GSTR-3B', date: '20 Nov' },
+      { label: 'MSME dues', date: 'within 45 days' },
+    ],
+  },
+  acts: [
+    {
+      id: 'gst',
+      num: '01',
+      act: 'CGST · IGST Act',
+      name: 'GST',
+      steps: ['Post', 'Tax verified', '2B matched', 'GSTR-1 · 3B', 'Return ready'],
+      tags: ['Place of supply', 'ITC · s.17(5)', 'Branch transfers'],
+    },
+    {
+      id: 'tds',
+      num: '02',
+      act: 'Income-tax Act, 2025',
+      name: 'TDS · TCS',
+      steps: ['Bill', 's.393 section', 'Rate + threshold', 'Challan', 'Return'],
+      tags: ['Legacy sections alongside', 'No-PAN · s.397', 'Cash limits · s.40A(3)'],
+    },
+    {
+      id: 'books',
+      num: '03',
+      act: 'Companies Act · CARO · AS',
+      name: 'Books & audit',
+      steps: ['Entry', 'Audit trail', 'Approve', 'Lock', 'Schedule III'],
+      tags: ['Edit log, always on', 'AS 2 · cost or NRV', 'CARO 3(ii)'],
+    },
+    {
+      id: 'msme',
+      num: '04',
+      act: 'MSMED Act · s.43B(h)',
+      name: 'MSME',
+      steps: ['Bill', '45-day clock', 'Alert', 'Pay'],
+      tags: ['Dues by supplier', 'Disallowance', 'Bank stock statement'],
+    },
+  ],
+  gstPanel: {
+    title: 'GSTR-1 · October 2026 · 33AABCQ7301S1Z…',
+    badge: 'Ready to file',
+    meter: { label: '2B matched', value: '98.6%', pct: 0.986 },
+    caption: '2B matched 98.6% · 6 supplier mismatches listed',
+  },
+  tdsPanel: {
+    title: 'TDS register · Income-tax Act, 2025',
+    badge: 'Reconciled to the ledger',
+    caption: 'Awaiting approval ₹4,200 shown separately · Form 140 ready',
+  },
+  auditTrail: {
+    title: 'Audit trail · INV-1042',
+    events: [
+      { time: '10:05', action: 'Created', detail: 'Parrot AI draft · confirmed by Priya' },
+      { time: '10:41', action: 'Edited', detail: 'Rate ₹420 → ₹410 · reason: agreed price' },
+      { time: '11:02', action: 'Approved', detail: 'Ravi · maker-checker' },
+      { time: '1 Nov', action: 'Period locked', detail: 'October closed' },
+    ],
+    notes: ['The edit log cannot be switched off', 'Rule 3(1) · Companies (Accounts) Rules'],
+  },
+  msmePanel: {
+    title: 'MSME dues · s.43B(h)',
+    countdown: { value: '6', label: 'days left' },
+    suppliers: [
+      { name: 'Sri Balaji Steels', day: 'day 39' },
+      { name: 'Anna Packaging', day: 'day 21' },
+      { name: 'KR Transport', day: 'day 47 · disallow', late: true },
+    ],
+    notes: ['Alert ahead of day 45', 'Disallowance calculated for tax audit'],
+  },
+  footnote: 'E-invoice and e-way bill generation are currently in development.',
+  // Short form used on the home page
+  refs: [
+    { name: 'GST', act: 'CGST · IGST Act' },
+    { name: 'TDS · TCS', act: 'Income-tax Act, 2025' },
+    { name: 'Books & audit', act: 'Companies Act · CARO · AS' },
+    { name: 'MSME', act: 'MSMED Act · s.43B(h)' },
+  ],
+}
 
-// placeholder: article bodies are outlines until the full articles are written
-export const articles = [
-  {
-    slug: 'what-is-ai-powered-erp-software',
-    title: 'What Is AI-Powered ERP Software?',
-    category: 'Artificial Intelligence',
-    excerpt: 'How intelligence built into an ERP changes the way businesses record, understand and act on their data.',
-    readTime: '6 min read',
-    featured: true,
-    outline: ['What an ERP does', 'Where AI fits in', 'Practical examples', 'Questions to ask before you choose'],
-  },
-  {
-    slug: 'how-erp-improves-business-efficiency',
-    title: 'How ERP Software Helps Businesses Improve Efficiency',
-    category: 'ERP & Enterprise Technology',
-    excerpt: 'Fewer hand-offs, less re-keying and one version of the truth: where the efficiency gains really come from.',
-    readTime: '5 min read',
-    featured: true,
-    outline: ['The cost of disconnected systems', 'Shared data, shared work', 'Measuring the difference'],
-  },
-  {
-    slug: 'traditional-erp-vs-ai-powered-erp',
-    title: 'Traditional ERP vs. AI-Powered ERP',
-    category: 'ERP & Enterprise Technology',
-    excerpt: 'A clear comparison of what changes, and what stays the same, when intelligence is built into the system.',
-    readTime: '7 min read',
-    featured: true,
-    outline: ['Recording vs. understanding', 'Automation in practice', 'Choosing the right fit'],
-  },
-  {
-    slug: 'signs-your-business-needs-an-erp',
-    title: '7 Signs Your Business Needs an ERP System',
-    category: 'Operations & Management',
-    excerpt: 'From spreadsheet sprawl to slow month-end closes, the signals that it is time for a connected system.',
-    readTime: '5 min read',
-    outline: ['Spreadsheet sprawl', 'Slow closes', 'Stock surprises', 'Approval bottlenecks'],
-  },
-  {
-    slug: 'how-business-automation-reduces-manual-work',
-    title: 'How Business Automation Reduces Manual Work',
-    category: 'Business Automation',
-    excerpt: 'Which tasks are worth automating first, and how to keep people in control of the process.',
-    readTime: '6 min read',
-    outline: ['Finding repetitive work', 'Automating safely', 'Keeping people in the loop'],
-  },
-  {
-    slug: 'why-connected-business-systems-matter',
-    title: 'Why Connected Business Systems Matter',
-    category: 'Operations & Management',
-    excerpt: 'When finance, stock and people share one data model, teams stop reconciling and start deciding.',
-    readTime: '4 min read',
-    outline: ['The reconciliation trap', 'One data model', 'Visibility across teams'],
-  },
-  {
-    slug: 'erp-implementation-complete-guide',
-    title: 'ERP Implementation: A Complete Guide',
-    category: 'ERP & Enterprise Technology',
-    excerpt: 'A practical walkthrough from discovery to go-live, with the decisions that matter at each stage.',
-    readTime: '10 min read',
-    outline: ['Discovery', 'Configuration', 'Data migration', 'Training', 'Go-live and beyond'],
-  },
-  {
-    slug: 'how-to-choose-the-right-erp-software',
-    title: 'How to Choose the Right ERP Software',
-    category: 'Finance & Accounting',
-    excerpt: 'The criteria, questions and trade-offs to weigh when selecting an ERP for a growing business.',
-    readTime: '8 min read',
-    outline: ['Start with your processes', 'Evaluate the ecosystem', 'Plan for growth', 'Total cost of ownership'],
-  },
-]
+/* ---------------------------------------------------------------- Pricing */
 
-export type Module = (typeof modules)[number]
-export type Article = (typeof articles)[number]
-export type Integration = (typeof integrations)[number]
+export const pricing = {
+  eyebrow: 'Packs and pricing',
+  title: 'One simple price per company. Every agent included.',
+  lead: 'Start for free. Add users, companies and controls as you grow.',
+  billing: { yearly: 'Yearly', yearlyNote: '2 months free', monthly: 'Monthly' },
+  packs: [
+    {
+      name: 'Free',
+      audience: 'For individuals getting started',
+      price: null as number | null,
+      cta: { label: 'Start for free', to: demoLink },
+      features: ['1 user · 1 company', '1,000 invoices a year', 'GST returns and TDS', 'UPI pay links', 'Built-in Health Check'],
+    },
+    {
+      name: 'Standard',
+      audience: 'For small teams',
+      price: 6000,
+      cta: { label: 'Choose Standard', to: demoLink },
+      features: [
+        'Everything in Free, plus',
+        '3 users · 3 branches',
+        'Unlimited invoices',
+        'Parrot AI entries and voice',
+        'Collection agent',
+        'Warehouses · GSTR-2B reconciliation',
+      ],
+    },
+    {
+      name: 'Professional',
+      audience: 'For growing SMEs',
+      price: 12000,
+      cta: { label: 'Choose Professional', to: demoLink },
+      features: [
+        'Everything in Standard, plus',
+        '10 users · 3 companies',
+        'Budgets',
+        'Approval workflows',
+        'Collection autopilot',
+        'Batches and price lists',
+      ],
+    },
+    {
+      name: 'Professional Plus',
+      audience: 'For customisation and control',
+      price: 48000,
+      featured: true,
+      cta: { label: 'Book a demo', to: demoLink },
+      features: [
+        'Everything in Professional, plus',
+        '25 users · 3 companies',
+        'Custom fields and print designer',
+        'Report builder · 25 reports',
+        '10 automations · 10 custom checks',
+        'Own roles and API',
+      ],
+    },
+    {
+      name: 'Enterprise',
+      audience: 'For business groups',
+      price: 180000,
+      cta: { label: 'Choose Enterprise', to: demoLink },
+      features: [
+        'Everything in Plus, plus',
+        '50 users · group consolidation',
+        'Manufacturing included',
+        'Governance and advanced planning',
+        'SSO, success manager, SLA',
+        'Unlimited custom checks',
+      ],
+    },
+  ],
+  assurances: ['Migration in 3 days', 'Live in 2 weeks', 'Users, branches and warehouses shared across all your companies', 'No external AI'],
+  suites: [
+    { name: 'Professional One', text: 'Professional Plus, with the complete business suite.', price: 90000 },
+    { name: 'Enterprise One', text: 'Enterprise, with every suite module included.', price: 276000 },
+  ],
+  compare: {
+    eyebrow: 'Compare',
+    title: 'Every pack, compared side by side.',
+    // placeholder: the source document lost the row labels of this table. Labels and values
+    // below are taken from the pack cards and the plan-availability notes on each solution page.
+    rows: [
+      { label: 'Price per company / year', values: ['Free', '₹6,000', '₹12,000', '₹48,000', '₹1,80,000'] },
+      { label: 'Users', values: ['1', '3', '10', '25', '50'] },
+      { label: 'Companies', values: ['1', '1', '3', '3', '3 + group'] },
+      { label: 'Invoices a year', values: ['1,000', 'Unlimited', 'Unlimited', 'Unlimited', 'Unlimited'] },
+      { label: 'GST returns and TDS', values: [true, true, true, true, true] },
+      { label: 'UPI pay links', values: [true, true, true, true, true] },
+      { label: 'Built-in Health Check', values: [true, true, true, true, true] },
+      { label: 'Parrot AI questions', values: [true, true, true, true, true] },
+      { label: 'Parrot AI entries and voice', values: [false, true, true, true, true] },
+      { label: 'Collection agent', values: [false, true, true, true, true] },
+      { label: 'Warehouses · GSTR-2B reconciliation', values: [false, true, true, true, true] },
+      { label: 'Budgets', values: [false, false, true, true, true] },
+      { label: 'Approval workflows', values: [false, false, '1 step', '3 steps', 'Unlimited'] },
+      { label: 'Collection autopilot', values: [false, false, true, true, true] },
+      { label: 'Batches and price lists', values: [false, false, true, true, true] },
+      { label: 'Custom fields and print designer', values: [false, false, false, true, true] },
+      { label: 'Report builder', values: [false, false, false, '25', 'Unlimited'] },
+      { label: 'Automations', values: [false, false, false, '10', 'Unlimited'] },
+      { label: 'Custom checks', values: [false, false, false, '10', 'Unlimited'] },
+      { label: 'Own roles and API', values: [false, false, false, true, true] },
+      { label: 'Group consolidation', values: [false, false, false, false, true] },
+      { label: 'Manufacturing', values: [false, 'Add-on', 'Add-on', 'Add-on', 'Included'] },
+      { label: 'Governance and advanced planning', values: [false, false, false, false, true] },
+      { label: 'SSO, success manager, SLA', values: [false, false, false, false, true] },
+    ] as { label: string; values: (string | boolean)[] }[],
+  },
+  faqs: {
+    eyebrow: 'FAQs',
+    title: 'Before you decide.',
+    items: [
+      {
+        q: 'Is GST included?',
+        a: 'Prices are exclusive of GST. Monthly billing is charged at one-tenth of the yearly price, each month.',
+      },
+      { q: 'What is shared across companies?', a: 'Users, branches and warehouses are pooled across all your companies.' },
+      { q: 'Can I upgrade my pack?', a: 'Yes. Your books remain exactly as they are, and the new features are switched on.' },
+    ],
+  },
+}
 
+export const formatInr = (n: number) => `₹${n.toLocaleString('en-IN')}`
+
+// Used by the contact form
 export const industries = [
   'Manufacturing',
   'Distribution & Wholesale',
   'Retail',
-  'Professional Services',
   'Construction',
+  'Professional Services',
   'Healthcare',
   'Other',
 ]

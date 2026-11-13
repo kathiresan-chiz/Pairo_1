@@ -20,7 +20,7 @@ export default function Legal({ page }: { page: keyof typeof pages }) {
   const p = pages[page]
   return (
     <>
-      <Seo title={`${p.title} | PairoApps`} description={p.intro} path={p.path} />
+      <Seo title={`${p.title} | PairO`} description={p.intro} path={p.path} />
       <PageHero eyebrow="Legal" title={p.title} text={p.intro} />
       <section className="container-x pb-20">
         <div className="max-w-3xl rounded-[2rem] bg-white p-8 leading-relaxed text-muted ring-1 ring-line sm:p-12">

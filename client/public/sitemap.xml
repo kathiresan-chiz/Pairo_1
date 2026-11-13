@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.pairoapps.com/</loc></url>
-  <url><loc>https://www.pairoapps.com/about</loc></url>
-  <url><loc>https://www.pairoapps.com/services</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/sales</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/purchases</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/accounting</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/banking</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/inventory</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/manufacturing</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/gst</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/tds</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/reports</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/budgets</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/control</loc></url>
+  <url><loc>https://www.pairoapps.com/solutions/parrot</loc></url>
+  <url><loc>https://www.pairoapps.com/parrot-ai</loc></url>
+  <url><loc>https://www.pairoapps.com/health-check</loc></url>
+  <url><loc>https://www.pairoapps.com/compliance</loc></url>
   <url><loc>https://www.pairoapps.com/pricing</loc></url>
-  <url><loc>https://www.pairoapps.com/insights</loc></url>
   <url><loc>https://www.pairoapps.com/contact</loc></url>
-  <url><loc>https://www.pairoapps.com/insights/what-is-ai-powered-erp-software</loc></url>
-  <url><loc>https://www.pairoapps.com/insights/how-erp-improves-business-efficiency</loc></url>
-  <url><loc>https://www.pairoapps.com/insights/traditional-erp-vs-ai-powered-erp</loc></url>
-  <url><loc>https://www.pairoapps.com/insights/signs-your-business-needs-an-erp</loc></url>
-  <url><loc>https://www.pairoapps.com/insights/how-business-automation-reduces-manual-work</loc></url>
-  <url><loc>https://www.pairoapps.com/insights/why-connected-business-systems-matter</loc></url>
-  <url><loc>https://www.pairoapps.com/insights/erp-implementation-complete-guide</loc></url>
-  <url><loc>https://www.pairoapps.com/insights/how-to-choose-the-right-erp-software</loc></url>
   <url><loc>https://www.pairoapps.com/privacy</loc></url>
   <url><loc>https://www.pairoapps.com/terms</loc></url>
 </urlset>

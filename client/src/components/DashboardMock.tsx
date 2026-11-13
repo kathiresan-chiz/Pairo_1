@@ -2,16 +2,17 @@ import monogram from '../assets/brand/monogram-white.png'
 
 const bars = [38, 52, 44, 63, 58, 72, 66, 81, 74, 88, 79, 92]
 
+// Agent results and the agents' day, from the home page content.
 const kpis = [
-  { label: 'Revenue', value: '4.82M', change: '+12.4%' },
-  { label: 'Stock value', value: '2.16M', change: '+3.1%' },
-  { label: 'Open orders', value: '134', change: '-8 today' },
+  { label: 'Banking agent', value: '58', change: 'bank lines matched' },
+  { label: 'Collection agent', value: '₹2.3 L', change: 'collected today' },
+  { label: 'Audit agent', value: '70/70', change: 'checks clear' },
 ]
 
 const ledger = [
-  { ref: 'INV-2041', type: 'Sales invoice', status: 'Posted', tone: 'bg-seal text-navy' },
-  { ref: 'PO-1187', type: 'Purchase order', status: 'Approved', tone: 'bg-brand/10 text-brand-deep' },
-  { ref: 'PAY-0932', type: 'Payroll run', status: 'Scheduled', tone: 'bg-crimson/15 text-[#c23a56]' },
+  { ref: '08:02', type: 'Banking agent · 58 bank lines matched', status: 'Done', tone: 'bg-seal text-navy' },
+  { ref: '09:00', type: 'Sales agent · 14 invoices raised and sent', status: 'Done', tone: 'bg-brand/10 text-brand-deep' },
+  { ref: '10:15', type: 'Approval agent · 1 decision awaiting you', status: 'Needs you', tone: 'bg-crimson/15 text-[#c23a56]' },
 ]
 
 // Illustrative product UI built in HTML (sample data only).
@@ -19,7 +20,7 @@ export default function DashboardMock({ className = '' }: { className?: string }
   return (
     <div
       role="img"
-      aria-label="Illustration of the PAIRO dashboard showing finance, stock and order figures (sample data)"
+      aria-label="Illustration of PairO agents at work: bank lines matched, collections and audit checks (sample data)"
       className={`rounded-3xl bg-white p-4 text-ink shadow-2xl ring-1 shadow-navy/40 ring-white/60 sm:p-5 ${className}`}
     >
       <div className="flex items-center justify-between gap-3">
@@ -27,19 +28,19 @@ export default function DashboardMock({ className = '' }: { className?: string }
           <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-b from-navy-deep to-brand">
             <img src={monogram} alt="" className="w-5" />
           </span>
-          <span className="text-sm font-semibold">Overview</span>
+          <span className="text-sm font-semibold">PairO agent · at work · 24×7</span>
         </div>
         <div className="hidden gap-1 rounded-full bg-mist p-1 text-[11px] font-medium sm:flex">
-          <span className="rounded-full bg-white px-2.5 py-1 shadow-sm">Finance</span>
-          <span className="px-2.5 py-1 text-muted">Stock</span>
-          <span className="px-2.5 py-1 text-muted">People</span>
+          <span className="rounded-full bg-white px-2.5 py-1 shadow-sm">Banking</span>
+          <span className="px-2.5 py-1 text-muted">Bills</span>
+          <span className="px-2.5 py-1 text-muted">Sales</span>
         </div>
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
         {kpis.map((k) => (
           <div key={k.label} className="rounded-2xl bg-mist p-2.5 sm:p-3">
-            <p className="text-[10px] text-muted sm:text-xs">{k.label}</p>
+            <p className="text-[10px] leading-tight text-muted [overflow-wrap:anywhere] sm:text-xs">{k.label}</p>
             <p className="mt-1 text-sm font-semibold sm:text-lg">{k.value}</p>
             <p className="text-[10px] font-medium text-brand">{k.change}</p>
           </div>
@@ -48,8 +49,8 @@ export default function DashboardMock({ className = '' }: { className?: string }
 
       <div className="mt-3 rounded-2xl bg-mist p-3">
         <div className="flex items-center justify-between text-xs">
-          <span className="font-semibold">Cash flow</span>
-          <span className="text-muted">Last 12 months</span>
+          <span className="font-semibold">Agent activity</span>
+          <span className="text-muted">Today</span>
         </div>
         <div className="mt-3 flex h-20 items-end gap-1.5 sm:h-24">
           {bars.map((h, i) => (

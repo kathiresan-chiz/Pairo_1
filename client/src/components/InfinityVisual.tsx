@@ -2,9 +2,16 @@ import { useId } from 'react'
 
 const PATH = 'M200,100 C250,30 350,30 350,100 C350,170 250,170 200,100 C150,30 50,30 50,100 C50,170 150,170 200,100 Z'
 
-// The abstract infinity loop from the brand board: seal → blue → navy → crimson,
-// with a thin light trace travelling around it.
-export default function InfinityVisual({ className = '', glow = true }: { className?: string; glow?: boolean }) {
+interface InfinityVisualProps {
+  className?: string
+  glow?: boolean
+  // Thin light trace travelling around the loop. Animating it repaints the whole SVG
+  // (blurred glow included) every frame, so keep it to small, foreground loops.
+  trace?: boolean
+}
+
+// The abstract infinity loop from the brand board: seal → blue → navy → crimson.
+export default function InfinityVisual({ className = '', glow = true, trace = false }: InfinityVisualProps) {
   const id = useId().replace(/:/g, '')
   return (
     <svg viewBox="0 0 400 200" className={className} aria-hidden="true" focusable="false">
@@ -21,16 +28,18 @@ export default function InfinityVisual({ className = '', glow = true }: { classN
       </defs>
       {glow && <path d={PATH} fill="none" stroke={`url(#${id}g)`} strokeWidth="36" opacity="0.5" filter={`url(#${id}b)`} />}
       <path d={PATH} fill="none" stroke={`url(#${id}g)`} strokeWidth="30" strokeLinejoin="round" />
-      <path
-        d={PATH}
-        fill="none"
-        stroke="#fff"
-        strokeOpacity="0.85"
-        strokeWidth="1.6"
-        strokeDasharray="70 330"
-        strokeLinecap="round"
-        className="animate-dash"
-      />
+      {trace && (
+        <path
+          d={PATH}
+          fill="none"
+          stroke="#fff"
+          strokeOpacity="0.85"
+          strokeWidth="1.6"
+          strokeDasharray="70 330"
+          strokeLinecap="round"
+          className="animate-dash"
+        />
+      )}
     </svg>
   )
 }

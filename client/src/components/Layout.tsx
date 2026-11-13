@@ -2,19 +2,18 @@ import { useEffect, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import { scrollToTarget, startSmoothScroll } from '../lib/smoothScroll'
-
+import ParrotCompanion from './ParrotCompanion'
+import { scrollToHash, scrollToTop, startSmoothScroll } from '../lib/smoothScroll'
+// Smooth wheel scrolling (see lib/smoothScroll): new pages start at the top,
+// #links glide to their section just below the header.
 function ScrollManager() {
   const { pathname, hash } = useLocation()
 
   useEffect(() => startSmoothScroll(), [])
 
   useEffect(() => {
-    if (hash) {
-      scrollToTarget(hash, { offset: -100 })
-    } else {
-      scrollToTarget(0, { immediate: true })
-    }
+    if (hash) scrollToHash(hash)
+    else scrollToTop()
   }, [pathname, hash])
   return null
 }
@@ -48,6 +47,7 @@ function ScrollProgress() {
 }
 
 export default function Layout() {
+  const { pathname } = useLocation()
   return (
     <>
       <ScrollManager />
@@ -63,6 +63,8 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
+      {/* Parrot AI on every page; keyed so it flies in again on each new page */}
+      <ParrotCompanion key={pathname} />
     </>
   )
 }

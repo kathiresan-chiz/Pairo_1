@@ -1,6 +1,7 @@
 import Reveal from './Reveal'
 import Button from './Button'
 import InfinityVisual from './InfinityVisual'
+import { demoLink } from '../content/site'
 
 export const brandGradient =
   'radial-gradient(circle at 85% 110%, rgba(253,110,136,0.45) 0%, rgba(253,110,136,0) 50%), linear-gradient(135deg, #0E2547 0%, #1B4A8C 55%, #3A78C2 100%)'
@@ -20,8 +21,8 @@ interface CtaBannerProps {
 export default function CtaBanner({
   title,
   text,
-  primary = { label: 'Book a demo', to: '/contact?intent=demo' },
-  secondary = { label: 'Explore solutions', to: '/services' },
+  primary = { label: 'Book a demo', to: demoLink },
+  secondary = { label: 'View all agentic solutions', to: '/solutions' },
 }: CtaBannerProps) {
   return (
     <section className="container-x py-16 sm:py-24">

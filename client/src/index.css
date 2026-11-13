@@ -41,8 +41,17 @@
 }
 
 @layer base {
+  html {
+    scroll-padding-top: 6rem;
+  }
   body {
     @apply bg-mist font-sans text-ink antialiased;
+    overflow-wrap: break-word;
+  }
+  /* Grid items may shrink below their content width, so a long word or a wide child
+     never pushes a card past a small screen. */
+  :where(.grid) > * {
+    min-width: 0;
   }
   p {
     text-wrap: pretty;
@@ -68,11 +77,12 @@
     -webkit-mask: var(--mask) center / 100% 100% no-repeat;
     @apply animate-flow;
   }
+  /* Static halos: an animated filter would repaint the logo on every frame while scrolling */
   .glow-soft {
-    animation: pulse-soft 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(58, 120, 194, 0.3)) drop-shadow(0 0 10px rgba(253, 110, 136, 0.35));
   }
   .glow-strong {
-    animation: pulse-strong 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(150, 140, 235, 0.75)) drop-shadow(0 0 24px rgba(110, 130, 230, 0.55));
   }
 
   .reveal {
@@ -94,7 +104,7 @@
 
   /* Frosted glass surfaces: light (on blue panels) and dark (on ink panels) */
   .glass {
-    @apply border border-white/30 bg-white/15 backdrop-blur-2xl;
+    @apply border border-white/30 bg-white/15 backdrop-blur-xl;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 24px 48px -24px rgba(7, 45, 89, 0.55);
   }
   /*
@@ -184,7 +194,10 @@
     background: radial-gradient(circle at 100% 100%, transparent 2.5rem, var(--color-mist) calc(2.5rem + 0.5px));
   }
 
-  /* Fine film grain over gradient panels; the parent needs `relative isolate` */
+  /*
+   * Fine film grain over gradient panels; the parent needs `relative isolate`.
+   * No blend mode: blending a full-panel layer forces a repaint on every scroll frame.
+   */
   .grain::after {
     content: '';
     position: absolute;
@@ -192,8 +205,7 @@
     z-index: -1;
     border-radius: inherit;
     pointer-events: none;
-    opacity: 0.16;
-    mix-blend-mode: overlay;
+    opacity: 0.07;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -201,18 +213,344 @@
     background-image: radial-gradient(rgba(110, 166, 236, 0.55) 1.2px, transparent 1.6px);
     background-size: 18px 18px;
   }
+
+  /*
+   * Dark "glow" surfaces, from the dark-card references: near-black panels with a
+   * hairline edge and an indigo/blue light pooling from one corner.
+   */
+  .dark-panel {
+    border-radius: 2.5rem;
+    background: #07080d;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+  .glow-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 1.75rem;
+    background: #0d0e15;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+    color: #fff;
+  }
+  .glow-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--glow, none);
+    opacity: 0.85;
+    transition:
+      opacity 0.6s ease,
+      transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .glow-card:hover::before,
+  .glow-card[data-active]::before {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  .glow-card[data-glow='bl'] {
+    --glow: radial-gradient(75% 55% at 18% 112%, rgba(84, 72, 255, 0.95), rgba(58, 58, 220, 0.35) 45%, transparent 72%),
+      radial-gradient(38% 32% at 88% 104%, rgba(160, 175, 255, 0.55), transparent 70%);
+  }
+  .glow-card[data-glow='br'] {
+    --glow: radial-gradient(75% 55% at 85% 112%, rgba(84, 72, 255, 0.9), rgba(58, 58, 220, 0.3) 45%, transparent 72%),
+      radial-gradient(42% 36% at 92% 96%, rgba(190, 200, 255, 0.6), transparent 70%);
+  }
+  .glow-card[data-glow='b'] {
+    --glow: radial-gradient(90% 55% at 50% 118%, rgba(90, 70, 255, 0.95), rgba(58, 120, 194, 0.35) 50%, transparent 74%);
+  }
+  .glow-card[data-glow='tr'] {
+    --glow: radial-gradient(70% 60% at 88% -12%, rgba(84, 72, 255, 0.85), rgba(58, 120, 194, 0.25) 48%, transparent 72%),
+      radial-gradient(35% 30% at 96% 4%, rgba(200, 215, 255, 0.5), transparent 70%);
+  }
+  .glow-card[data-glow='brand'] {
+    --glow: radial-gradient(80% 60% at 20% 115%, rgba(58, 120, 194, 0.95), rgba(27, 74, 140, 0.4) 48%, transparent 74%),
+      radial-gradient(40% 35% at 90% 105%, rgba(159, 220, 250, 0.55), transparent 70%);
+  }
+
+  /* Two-tone glow (indigo + cyan) for cards whose light sweeps side to side */
+  .glow-card[data-glow='sweep'] {
+    --glow: radial-gradient(44% 78% at 36% 118%, rgba(84, 72, 255, 1), rgba(58, 58, 220, 0.35) 50%, transparent 74%),
+      radial-gradient(36% 66% at 64% 114%, rgba(94, 224, 242, 0.7), transparent 72%);
+  }
+  /* On tall cards the light stays a band along its edge rather than growing with the card */
+  .glow-card.glow-drift[data-glow='sweep']::before {
+    inset: auto -45% 0;
+    height: min(100%, 240px);
+  }
+  .glow-card.glow-drift[data-glow='sweep-top']::before {
+    inset: 0 -45% auto;
+    height: min(100%, 240px);
+  }
+  /* The same light from the top edge, for cards lit from above */
+  .glow-card[data-glow='sweep-top'] {
+    --glow: radial-gradient(44% 70% at 64% -16%, rgba(84, 72, 255, 0.9), rgba(58, 58, 220, 0.3) 50%, transparent 74%),
+      radial-gradient(36% 58% at 36% -12%, rgba(94, 224, 242, 0.55), transparent 72%);
+  }
+  /* The glow layer is wider than the card and glides left ↔ right. Cards in a row
+     get staggered delays (--drift-delay) so the light rolls across them like a wave. */
+  .glow-card.glow-drift::before {
+    inset: 0 -45%;
+    opacity: 1;
+    animation: glow-sweep 7s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+    animation-delay: var(--drift-delay, 0s);
+  }
+
+  /* Oversized gradient wordmark that sits behind metric cards */
+  .giant-word {
+    display: block;
+    background: linear-gradient(90deg, #3b2fd6 0%, #3a78c2 25%, #5ee0f2 50%, #3a78c2 75%, #3b2fd6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 0.82;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-size: clamp(3rem, 12.5vw, 11.5rem);
+  }
+
+  /* Metric-card fills: a gradient block, or diagonal stripes under a curve.
+     The gradient is wider than the block and drifts left ↔ right. */
+  .metric-fill {
+    background: linear-gradient(100deg, #3b2fd6 0%, #3a78c2 30%, #46b7d4 55%, #3a78c2 78%, #3b2fd6 100%);
+    background-size: 220% 100%;
+    animation: color-drift 9s ease-in-out infinite alternate;
+  }
+  .giant-word {
+    background-size: 200% 100%;
+    animation: color-drift 11s ease-in-out infinite alternate;
+  }
+  .metric-stripes {
+    background: repeating-linear-gradient(135deg, rgba(94, 224, 242, 0.55) 0 1px, transparent 1px 7px);
+    clip-path: ellipse(120% 100% at 100% 100%);
+  }
+
+  /* Chat messages and other staged reveals */
+  .stage-in {
+    animation: stage-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
 }
 
-@keyframes pulse-soft {
-  0%, 100% { filter: drop-shadow(0 0 4px rgba(58, 120, 194, 0.25)); }
-  50% { filter: drop-shadow(0 0 12px rgba(253, 110, 136, 0.55)); }
+@keyframes glow-sweep {
+  from {
+    transform: translateX(-30%);
+  }
+  to {
+    transform: translateX(30%);
+  }
 }
-@keyframes pulse-strong {
-  0%, 100% { filter: drop-shadow(0 0 6px rgba(150, 140, 235, 0.7)) drop-shadow(0 0 18px rgba(110, 130, 230, 0.5)); }
-  50% { filter: drop-shadow(0 0 14px rgba(190, 150, 240, 1)) drop-shadow(0 0 46px rgba(110, 150, 240, 0.8)); }
+
+@keyframes color-drift {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
 }
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+
+/*
+ * Big standalone cards (any glow card outside a dark panel: Parrot chat, Health Check,
+ * custom check, compliance calendar, agent-page panels) use the brand navy (#072d59)
+ * instead of near-black, with a soft blue edge and shadow. Cards inside dark panels
+ * keep the original dark look.
+ */
+.glow-card:not(.dark-panel .glow-card) {
+  background: linear-gradient(160deg, #0b3a70 0%, #072d59 50%, #052448 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(159, 220, 250, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 24px 48px -20px rgba(7, 45, 89, 0.55),
+    0 4px 12px -4px rgba(7, 45, 89, 0.2);
+  color: #fff;
+}
+.glow-card:not(.dark-panel .glow-card)::before,
+.glow-card:not(.dark-panel .glow-card):hover::before {
+  opacity: 0.6;
+}
+
+/* Agent clock (AgentClock.tsx): the agents on their threads around Parrot AI */
+.agent-clock {
+  --s: 400px;
+}
+/* Agents ride their threads: AgentClock sets the translate property every frame */
+.ac-agent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: max(26px, calc(var(--s) * 0.08));
+  height: max(26px, calc(var(--s) * 0.08));
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-brand-deep);
+  box-shadow: 0 0 0 1px var(--color-line), 0 8px 18px -10px rgba(7, 45, 89, 0.45);
+  opacity: 0;
+  cursor: pointer;
+  transition: scale 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s, background-color 0.35s, color 0.35s,
+    box-shadow 0.35s;
+}
+/* a larger invisible tap area than the bead itself */
+.ac-agent::after {
+  content: '';
+  position: absolute;
+  inset: -9px;
+  border-radius: 999px;
+}
+.ac-agent:hover {
+  scale: 1.15;
+  color: var(--color-crimson);
+}
+.ac-agent[data-on] {
+  scale: 1.25;
+  background: linear-gradient(135deg, var(--color-navy-deep), var(--color-brand));
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(58, 120, 194, 0.22), 0 10px 24px -8px rgba(58, 120, 194, 0.7);
+}
+.ac-agent-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: max(9px, calc(var(--s) * 0.027));
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-brand-deep);
+}
+/* Parrot AI at the centre: bobs gently and flaps now and then */
+.ac-parrot {
+  display: block;
+  width: calc(var(--s) * 0.24);
+  margin: calc(var(--s) * 0.022) auto 0;
+  filter: drop-shadow(0 10px 16px rgba(27, 74, 140, 0.28));
+  animation: parrot-stand 3.6s ease-in-out infinite;
+}
+.ac-parrot .parrot-wing {
+  transform-box: fill-box;
+  transform-origin: 20% 90%;
+  animation: parrot-flap-idle 7s ease-in-out 1s infinite;
+}
+.ac-sub {
+  margin-top: calc(var(--s) * 0.014);
+  font-size: max(9px, calc(var(--s) * 0.028));
+  color: var(--color-muted);
+}
+
+/* Parrot AI companion (bottom-right, every page) */
+@keyframes parrot-stand { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-4px) rotate(-1.5deg); } }
+@keyframes parrot-flap { 0%,100% { transform: none; } 50% { transform: translateY(-5px) rotate(-14deg) scaleY(1.25); } }
+@keyframes parrot-flap-idle { 0%,100% { transform: none; } 3% { transform: translateY(-4px) rotate(-12deg) scaleY(1.2); } 6% { transform: none; } 9% { transform: translateY(-4px) rotate(-12deg) scaleY(1.2); } 12% { transform: none; } }
+@keyframes pc-trail { from { opacity: .9; transform: translate(-50%,-50%) scale(1); } to { opacity: 0; transform: translate(-50%,-50%) translateY(10px) scale(.2); } }
+@keyframes pc-pop { from { opacity: 0; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes pc-dot { 0%,80%,100% { opacity: .3; transform: none; } 40% { opacity: 1; transform: translateY(-3px); } }
+@keyframes pc-caret { 50% { opacity: 0; } }
+@keyframes pc-halo { 0%,100% { opacity: .7; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.06); } }
+@keyframes pc-ring { from { opacity: .7; transform: scale(.85); } to { opacity: 0; transform: scale(1.55); } }
+@keyframes pc-land { 0% { transform: translateY(-18px) rotate(-10deg) scale(1.12); } 55% { transform: translateY(3px) rotate(2deg) scale(.95); } 80% { transform: translateY(-2px); } 100% { transform: none; } }
+.parrot-flying .parrot-wing { transform-box: fill-box; transform-origin: 20% 90%; animation: parrot-flap .22s ease-in-out infinite !important; }
+.pc-flyer { offset-rotate: 0deg; will-change: offset-distance, transform; }
+.pc-trail { position: fixed; border-radius: 9999px; background: radial-gradient(circle, #c8e6fa 0%, #3a78c2 70%); box-shadow: 0 0 8px rgba(58,120,194,.6); animation: pc-trail .9s ease-out forwards; }
+.pc-pop { animation: pc-pop .35s cubic-bezier(.2,.8,.2,1) both; }
+.pc-dot { animation: pc-dot 1s infinite; }
+.pc-caret { margin-left: 1px; color: #3a78c2; animation: pc-caret .8s steps(1) infinite; }
+.pc-halo { animation: pc-halo 3s ease-in-out infinite; }
+.pc-ring { animation: pc-ring 2.8s ease-out infinite; }
+.pc-ring-2 { animation-delay: 1.4s; }
+.pc-land { animation: pc-land .7s cubic-bezier(.2,.8,.2,1) both; }
+.pc-dock .parrot-stand { animation: parrot-stand 3.6s ease-in-out infinite; }
+.pc-dock .parrot-wing { transform-box: fill-box; transform-origin: 20% 90%; animation: parrot-flap-idle 7s ease-in-out 1s infinite; }
+
+/* Parrot AI hero: holographic cyber parrot, scanner reveals the photo (ParrotReveal.tsx) */
+@keyframes pr-rise { from { opacity: 0; transform: translateY(40%) skewY(6deg); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes pr-bird-in { from { opacity: 0; transform: translateY(6%) scale(.97); } to { opacity: 1; transform: none; } }
+.pr-letter { animation: pr-rise 1s cubic-bezier(.2,.8,.2,1) both; }
+/* Parrot blink, modelled on a real one: the upper and lower lids (cut from the photo's own eye-ring
+   skin) close fast and meet at a curved lash seam, casting a soft shadow over the eye; they open more
+   slowly, then the translucent third eyelid sweeps across from the beak side and the catchlight glints. */
+@keyframes pr-lid-up {
+  0%   { transform: translateY(-101%); animation-timing-function: cubic-bezier(.55,0,.85,.4); }
+  22%  { transform: translateY(-43%); animation-timing-function: linear; }
+  31%  { transform: translateY(-43%); animation-timing-function: cubic-bezier(.2,.65,.25,1); }
+  100% { transform: translateY(-101%); } }
+@keyframes pr-lid-low {
+  0%   { transform: translateY(101%); animation-timing-function: cubic-bezier(.55,0,.85,.4); }
+  22%  { transform: translateY(53%); animation-timing-function: linear; }
+  31%  { transform: translateY(53%); animation-timing-function: cubic-bezier(.2,.65,.25,1); }
+  100% { transform: translateY(101%); } }
+@keyframes pr-shade { 0% { opacity: 0; } 22%, 31% { opacity: .9; } 70%, 100% { opacity: 0; } }
+@keyframes pr-nict { 0% { transform: translateX(105%); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(-105%); opacity: 0; } }
+@keyframes pr-glint { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.2) rotate(0deg); } 35% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(45deg); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(.5) rotate(80deg); } }
+.pr-lid { position: absolute; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: radial-gradient(circle, #000 86%, transparent 100%); mask-image: radial-gradient(circle, #000 86%, transparent 100%); }
+.pr-lid-dark { filter: brightness(.28) contrast(1.6) saturate(1.8) hue-rotate(-6deg); }
+.pr-lid-shade { position: absolute; inset: 0; opacity: 0; background: radial-gradient(120% 70% at 50% 0%, rgba(20,12,10,.55), transparent 70%); }
+.pr-lid-up, .pr-lid-low { position: absolute; inset: 0; overflow: hidden; }
+.pr-lid-up { z-index: 2; transform: translateY(-101%); border-radius: 0 0 50% 50% / 0 0 32% 32%;
+  box-shadow: 0 2px 3px rgba(30,18,14,.35); }
+.pr-lid-low { z-index: 1; transform: translateY(101%); border-radius: 50% 50% 0 0 / 26% 26% 0 0; }
+.pr-lid i { position: absolute; inset: 0; background-size: cover; background-position: center;
+  /* tone the skin to the shaded ring right around the eye (warmer, a touch darker than the outer ring) */
+  filter: brightness(.9) sepia(.1) saturate(1.15); }
+.pr-lid-up i { background-image: radial-gradient(130% 70% at 50% 0%, rgba(255,250,246,.35), transparent 60%), linear-gradient(0deg, rgba(84,58,50,.38), transparent 32%), url(/brand/parrot-lid-up.webp); }
+.pr-lid-low i { background-image: linear-gradient(180deg, rgba(84,58,50,.32), transparent 35%), radial-gradient(130% 70% at 50% 100%, rgba(255,250,246,.3), transparent 60%), url(/brand/parrot-lid-low.webp); }
+/* the lash seam on the upper lid's edge */
+.pr-lid-up::after { content: ""; position: absolute; left: 4%; right: 4%; bottom: 0; height: 30%;
+  border-radius: 0 0 50% 50% / 0 0 100% 100%; border-bottom: 1.6px solid rgba(34,22,20,.9); filter: blur(.25px); }
+/* the third eyelid: a translucent pearly film that sweeps across from the beak side */
+.pr-nict { position: absolute; inset: -4%; z-index: 3; opacity: 0; transform: translateX(105%);
+  background: linear-gradient(100deg, transparent 8%, rgba(232,238,244,.18) 26%, rgba(244,247,250,.62) 46%, rgba(255,255,255,.78) 52%, rgba(232,238,244,.5) 60%, transparent 82%); }
+.pr-blink .pr-lid-up { animation: pr-lid-up .62s both; }
+.pr-blink .pr-lid-low { animation: pr-lid-low .62s both; }
+.pr-blink .pr-lid-shade { animation: pr-shade .62s ease-out both; }
+.pr-blink .pr-nict { animation: pr-nict .36s cubic-bezier(.45,0,.3,1) .36s both; }
+.pr-eyefx { position: absolute; aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; }
+.pr-glint { position: absolute; left: 34%; top: 28%; width: 46%; height: 46%; opacity: 0;
+  background: radial-gradient(circle, #fff 0 9%, rgba(255,255,255,.5) 13%, transparent 22%), linear-gradient(90deg, transparent 47%, rgba(255,255,255,.9) 50%, transparent 53%), linear-gradient(0deg, transparent 47%, rgba(255,255,255,.9) 50%, transparent 53%);
+  -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 70%); mask-image: radial-gradient(circle, #000 30%, transparent 70%); filter: drop-shadow(0 0 3px rgba(220,238,255,.95)); }
+.pr-blink .pr-glint { animation: pr-glint .75s ease-out .5s both; }
+.pr-layer { animation: pr-bird-in 1.2s cubic-bezier(.2,.8,.2,1) .35s both; }
+
+/* Cyber parrot: the resting silhouette is a holographic, circuit-wired version of the bird */
+.pr-cyber-glow { filter: drop-shadow(0 0 1px rgba(200,230,250,.95)) drop-shadow(0 0 10px rgba(58,120,194,.75)) drop-shadow(0 0 32px rgba(58,120,194,.35)); }
+.pr-cyber-img { filter: brightness(.28) contrast(1.6) saturate(1.8) hue-rotate(-6deg); }
+.pr-grid { background-image:
+    linear-gradient(rgba(200,230,250,.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,230,250,.16) 1px, transparent 1px),
+    repeating-linear-gradient(0deg, rgba(58,120,194,.22) 0 1px, transparent 1px 3px);
+  background-size: 28px 28px, 28px 28px, 100% 3px; mix-blend-mode: screen; }
+@keyframes pr-node { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes pr-flow { to { stroke-dashoffset: -40; } }
+.pr-net line { stroke: rgba(200,230,250,.55); stroke-width: 1.6; stroke-dasharray: 6 14; animation: pr-flow 1.6s linear infinite; }
+.pr-net circle { fill: #c8e6fa; filter: drop-shadow(0 0 6px #3a78c2); animation: pr-node 2.4s ease-in-out infinite; }
+@keyframes pr-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+.pr-hud { position: absolute; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; }
+.pr-hud-a { border: 1.5px dashed rgba(200,230,250,.85); box-shadow: 0 0 14px rgba(58,120,194,.8), inset 0 0 10px rgba(58,120,194,.6); animation: pr-spin 9s linear infinite; }
+.pr-hud-b { border: 1px solid transparent; border-top-color: #c8e6fa; border-bottom-color: #c8e6fa; animation: pr-spin 3.2s linear infinite reverse; }
+.pr-hud-core { position: absolute; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(200,230,250,.95) 0 10%, rgba(58,120,194,.75) 24%, transparent 62%); animation: pr-node 2.4s ease-in-out infinite; }
+.pr-reticle { border: 1px solid rgba(200,230,250,.85); box-shadow: 0 0 24px rgba(58,120,194,.5), inset 0 0 24px rgba(58,120,194,.25); }
+.pr-reticle::before { content: ""; position: absolute; inset: 7%; border-radius: 50%; border: 1px dashed rgba(200,230,250,.5); animation: pr-spin-plain 12s linear infinite; }
+.pr-reticle::after { content: ""; position: absolute; inset: -6%;
+  background: linear-gradient(#c8e6fa, #c8e6fa) 50% 0 / 1px 9% no-repeat, linear-gradient(#c8e6fa, #c8e6fa) 50% 100% / 1px 9% no-repeat,
+    linear-gradient(#c8e6fa, #c8e6fa) 0 50% / 9% 1px no-repeat, linear-gradient(#c8e6fa, #c8e6fa) 100% 50% / 9% 1px no-repeat; }
+@keyframes pr-spin-plain { to { transform: rotate(360deg); } }
 
 @media (prefers-reduced-motion: reduce) {
+  .pc-ring { opacity: 0; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
