@@ -1,5 +1,6 @@
 # Netlify builds and hosts the React site in client/.
-# The Express API in server/ is not run by Netlify (see the /api redirect below).
+# Forms (contact, demo, newsletter) use Netlify Forms; see client/src/lib/api.ts.
+# The Express API in server/ is only used for local development.
 
 [build]
   base = "client"
@@ -9,16 +10,37 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# Forward form submissions to wherever the Express API is hosted.
-# Replace the URL with your API's address, then uncomment.
-# [[redirects]]
-#   from = "/api/*"
-#   to = "https://YOUR-API-HOST/api/:splat"
-#   status = 200
-#   force = true
-
-# Single-page app: let React Router handle every page URL (/about, /insights/..., etc.).
+# Single-page app: let React Router handle every page URL (/solutions/gst, /pricing, etc.).
+# Netlify still serves real files (assets, images, sitemap) first, and form POSTs are
+# handled by Netlify Forms before this rule applies.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Security headers on every page
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Built JS/CSS have a content hash in their names, so they can be cached for a year.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Brand images change rarely: cache for a week.
+[[headers]]
+  for = "/brand/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# Pages: always check for a new version, so a new deploy shows up at once.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

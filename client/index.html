@@ -19,6 +19,27 @@
     </script>
   </head>
   <body>
+    <!--
+      Netlify Forms: Netlify reads these hidden forms at deploy time to learn each form's
+      fields. The real forms are React components that post the same fields (src/lib/api.ts).
+    -->
+    <form name="enquiry" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input name="fullName" />
+      <input name="email" />
+      <input name="company" />
+      <input name="phone" />
+      <input name="industry" />
+      <textarea name="requirements"></textarea>
+      <input name="preferredContact" />
+      <input name="intent" />
+      <input name="source" />
+      <input name="bot-field" />
+    </form>
+    <form name="newsletter" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input name="email" />
+      <input name="bot-field" />
+    </form>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
