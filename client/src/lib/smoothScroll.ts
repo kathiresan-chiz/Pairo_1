@@ -26,11 +26,28 @@ export function startSmoothScroll(): () => void {
 }
 
 // Glide to a #section (below the header), or jump to the top on page changes.
-export function scrollToHash(hash: string) {
+// Pages load on demand, so wait up to ~2 s for the section to appear.
+export function scrollToHash(hash: string, tries = 120) {
   const target = document.getElementById(hash.slice(1))
-  if (!target) return
-  if (lenis) lenis.scrollTo(target, { offset: HEADER_OFFSET })
-  else target.scrollIntoView()
+  if (!target) {
+    if (tries > 0) requestAnimationFrame(() => scrollToHash(hash, tries - 1))
+    return
+  }
+  if (!lenis) {
+    target.scrollIntoView()
+    return
+  }
+  // A page that just loaded is taller than Lenis last measured, so re-measure first,
+  // then correct once more after images and fonts have settled the layout. The exact
+  // pixel position is passed, because given an element Lenis would also add the
+  // section's scroll-margin and the page's scroll-padding to the header offset.
+  const glide = () => {
+    if (!lenis) return
+    lenis.resize()
+    lenis.scrollTo(target.getBoundingClientRect().top + window.scrollY + HEADER_OFFSET)
+  }
+  glide()
+  window.setTimeout(glide, 700)
 }
 
 export function scrollToTop(options: ScrollOptions = { immediate: true }) {
