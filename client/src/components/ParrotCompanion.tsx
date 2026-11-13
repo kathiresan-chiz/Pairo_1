@@ -160,7 +160,7 @@ export default function ParrotCompanion() {
         <ParrotIcon tone="brand" className="block h-auto w-full drop-shadow-[0_10px_14px_rgba(27,74,140,0.3)]" />
       </div>
 
-      <div className="fixed right-4 bottom-4 z-[60] flex flex-col items-end gap-3 md:right-6 md:bottom-6">
+      <div className="fixed right-4 bottom-[46px] z-[60] flex flex-col items-end gap-3 md:right-6 md:bottom-[54px]">
         {/* chat panel */}
         {open && (
           <div

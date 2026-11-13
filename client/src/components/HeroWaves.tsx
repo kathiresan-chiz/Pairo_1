@@ -9,18 +9,16 @@ import type { HeroTheme } from './LedgerLoop'
  * Parrot AI voice waveform, and the pointer sends a ripple through it.
  */
 
-const THEMES: Record<HeroTheme, { line: string[]; fill: string; strand: string; glow: string }> = {
+const THEMES: Record<HeroTheme, { line: string[]; fill: string; strand: string }> = {
   light: {
     line: ['rgba(127,177,240,0)', '#3a78c2', '#1b4a8c', '#fd6e88', 'rgba(253,110,136,0)'],
     fill: '58,120,194',
     strand: '27,74,140',
-    glow: 'rgba(58,120,194,0.45)',
   },
   dark: {
     line: ['rgba(255,255,255,0)', '#ffffff', '#dbf2fc', '#fd6e88', 'rgba(253,110,136,0)'],
     fill: '255,255,255',
     strand: '255,255,255',
-    glow: 'rgba(255,255,255,0.6)',
   },
 }
 
@@ -63,15 +61,36 @@ export default function HeroWaves({ theme, className = '' }: { theme: HeroTheme;
     const rippleAmp = gsap.quickTo(ripple, 'amp', { duration: 0.6, ease: 'power2.out' })
     let calm = 0
 
-    // Height of the wave at x (0–1) for a given phase offset.
-    const wave = (x: number, phase: number, amp: number) => {
-      const env = Math.sin(Math.PI * Math.min(1, Math.max(0, x))) ** 0.8 // quieter at the edges
-      const s =
-        Math.sin(x * 6.2 + time * 0.9 + phase) * 0.55 +
-        Math.sin(x * 11.5 - time * 1.3 + phase * 1.7) * 0.28 +
-        Math.sin(x * 2.4 + time * 0.45 + phase * 0.6) * 0.45
-      const r = Math.exp(-(((x - ripple.x) / 0.09) ** 2)) * ripple.amp * Math.sin(x * 40 - time * 6)
-      return (s * env + r) * amp
+    /*
+     * The wave at x (0–1) for a phase p is
+     *   (0.55·sin(6.2x + 0.9t + p) + 0.28·sin(11.5x − 1.3t + 1.7p) + 0.45·sin(2.4x + 0.45t + 0.6p))·env(x)
+     *   + ripple(x)
+     * Every curve shares x and t and differs only in p, so each frame the sines and cosines
+     * of the x/t parts are worked out once per column (cols), and each curve combines them
+     * with its own phase by angle addition: sin(a + p) = sin a·cos p + cos a·sin p.
+     */
+    let cols = { n: 0, step: 1, env: new Float32Array(0), s: new Float32Array(0), c: new Float32Array(0), rip: new Float32Array(0) }
+    const prepare = (step: number) => {
+      const n = Math.ceil((w + step) / step) + 1
+      if (cols.n !== n) {
+        cols = { n, step, env: new Float32Array(n), s: new Float32Array(n * 3), c: new Float32Array(n * 3), rip: new Float32Array(n) }
+      }
+      cols.step = step
+      const ripOn = ripple.amp > 0.001
+      for (let j = 0; j < n; j++) {
+        const x = (j * step) / w
+        cols.env[j] = Math.sin(Math.PI * Math.min(1, Math.max(0, x))) ** 0.8 // quieter at the edges
+        const a1 = x * 6.2 + time * 0.9
+        const a2 = x * 11.5 - time * 1.3
+        const a3 = x * 2.4 + time * 0.45
+        cols.s[j * 3] = Math.sin(a1)
+        cols.c[j * 3] = Math.cos(a1)
+        cols.s[j * 3 + 1] = Math.sin(a2)
+        cols.c[j * 3 + 1] = Math.cos(a2)
+        cols.s[j * 3 + 2] = Math.sin(a3)
+        cols.c[j * 3 + 2] = Math.cos(a3)
+        cols.rip[j] = ripOn ? Math.exp(-(((x - ripple.x) / 0.09) ** 2)) * ripple.amp * Math.sin(x * 40 - time * 6) : 0
+      }
     }
 
     const draw = () => {
@@ -80,15 +99,23 @@ export default function HeroWaves({ theme, className = '' }: { theme: HeroTheme;
       ctx.clearRect(0, 0, w, h)
       const base = h * 0.58
       const amp = h * 0.24 * swell.v
-      const step = Math.max(4, w / 260)
+      prepare(Math.max(4, w / 260))
+      const { n, step, env, s, c, rip } = cols
 
       const path = (phase: number, a: number, offset: number) => {
+        const sp1 = Math.sin(phase), cp1 = Math.cos(phase)
+        const sp2 = Math.sin(phase * 1.7), cp2 = Math.cos(phase * 1.7)
+        const sp3 = Math.sin(phase * 0.6), cp3 = Math.cos(phase * 0.6)
         ctx.beginPath()
-        for (let px = 0; px <= w + step; px += step) {
-          const x = px / w
-          const y = base + offset + wave(x, phase, a)
-          if (px === 0) ctx.moveTo(px, y)
-          else ctx.lineTo(px, y)
+        for (let j = 0; j < n; j++) {
+          const k = j * 3
+          const v =
+            (s[k] * cp1 + c[k] * sp1) * 0.55 +
+            (s[k + 1] * cp2 + c[k + 1] * sp2) * 0.28 +
+            (s[k + 2] * cp3 + c[k + 2] * sp3) * 0.45
+          const y = base + offset + (v * env[j] + rip[j]) * a
+          if (j === 0) ctx.moveTo(0, y)
+          else ctx.lineTo(j * step, y)
         }
       }
 
@@ -127,22 +154,29 @@ export default function HeroWaves({ theme, className = '' }: { theme: HeroTheme;
       }
       ctx.globalAlpha = 1
 
-      // The bright line, in the brand gradient, with a soft glow
+      // The bright line, in the brand gradient, with a soft glow. The glow is two wide,
+      // faint strokes under the line: it looks like a blur shadow but costs far less to draw.
       const lineGrad = ctx.createLinearGradient(0, 0, w, 0)
-      t.line.forEach((c, i) => lineGrad.addColorStop(i / (t.line.length - 1), c))
+      t.line.forEach((col, i) => lineGrad.addColorStop(i / (t.line.length - 1), col))
       path(0.7, amp * 1.05, 0)
       ctx.strokeStyle = lineGrad
-      ctx.lineWidth = 2.5
-      ctx.shadowColor = t.glow
-      ctx.shadowBlur = 14
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.globalAlpha = 0.1
+      ctx.lineWidth = 14
       ctx.stroke()
-      ctx.shadowBlur = 0
+      ctx.globalAlpha = 0.22
+      ctx.lineWidth = 6
+      ctx.stroke()
+      ctx.globalAlpha = 1
+      ctx.lineWidth = 2.5
+      ctx.stroke()
     }
     redrawRef.current = draw
 
     const resize = () => {
       const r = canvas.getBoundingClientRect()
-      dpr = Math.min(window.devicePixelRatio || 1, 2)
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5) // 1.5× stays sharp for soft waves, at far less GPU work
       w = Math.max(1, r.width)
       h = Math.max(1, r.height)
       canvas.width = Math.round(w * dpr)

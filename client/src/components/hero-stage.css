@@ -673,6 +673,24 @@
   .hs-swipe {
     width: 100%;
   }
+  /* Phones: headline, lead and both cards centred in the hero card */
+  .hs-copy,
+  .hs-card {
+    text-align: center;
+  }
+  .hs-lead,
+  .hs-card__text {
+    margin-inline: auto;
+  }
+  .hs-card {
+    align-items: center;
+  }
+  .hs-card__row {
+    justify-content: center;
+  }
+  .hs-card .hs-pill {
+    align-self: center;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

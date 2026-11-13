@@ -18,13 +18,13 @@ export default function Footer() {
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute -right-24 -bottom-32 size-96 rounded-full bg-brand/40 blur-3xl"
+          className="pointer-events-none absolute -right-40 -bottom-48 size-[40rem] rounded-full bg-[radial-gradient(closest-side,rgba(58,120,194,0.4),rgba(58,120,194,0.16)_55%,transparent)]"
           aria-hidden="true"
         />
 
         <div className="relative flex flex-col gap-8 border-b border-white/10 pb-12 md:flex-row md:items-end md:justify-between">
           <div>
-            <Logo tone="light" className="h-12 sm:h-14" />
+            <Logo tone="light" glow={false} className="h-12 sm:h-14" />
             <p className="mt-6 max-w-xl text-2xl leading-tight font-light text-balance text-seal sm:text-3xl">
               {company.promise}
             </p>

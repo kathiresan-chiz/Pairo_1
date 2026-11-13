@@ -201,6 +201,19 @@ export default function GlassBubbles({ colors, count = 14, seed = 11, className 
   useEffect(() => {
     const canvas = canvasRef.current!
     const host = canvas.parentElement!
+    // Create the WebGL context and compile the shader only when the panel comes near the
+    // screen, so none of that work happens while the page is first loading.
+    let cleanup: (() => void) | undefined
+    const near = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return
+        near.disconnect()
+        cleanup = boot()
+      },
+      { rootMargin: '600px 0px' },
+    )
+    near.observe(host)
+    const boot = (): (() => void) | undefined => {
     const gl = canvas.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: false })
     if (!gl) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -361,6 +374,11 @@ export default function GlassBubbles({ colors, count = 14, seed = 11, className 
       document.removeEventListener('visibilitychange', onVis)
       gl.deleteProgram(prog)
       gl.deleteBuffer(buf)
+    }
+    }
+    return () => {
+      near.disconnect()
+      cleanup?.()
     }
   }, [colors, count, seed])
 
