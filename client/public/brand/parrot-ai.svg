@@ -11,9 +11,12 @@
       <stop offset="0" stop-color="#3a78c2" stop-opacity="0"/><stop offset="1" stop-color="#3a78c2"/>
     </linearGradient>
   </defs>
-  <path d="M62 4C42 17 35 46 45 69H101C84 54 70 32 62 4Z" fill="url(#sail)"/>
-  <path d="M28 99C58 84 94 69 121 69C137 69 147 77 150 86C141 84 133 88 127 94C110 104 80 103 28 99Z" fill="url(#body)"/>
+  <path d="M60 5C41 18 34 46 44 69H101Q100 58 88 47Q86 35 76 27Q72 14 60 5Z" fill="url(#sail)"/>
+  <path d="M28 99C58 84 92 68 118 67C132 66 143 72 147 81C151 86 155 94 151 104C148 101 145 98 142 96C139 95 136 95 133 95C127 102 116 105 105 105C80 106 52 103 28 99Z" fill="url(#body)"/>
   <path d="M70 89C88 80 104 76 118 77C108 81 96 88 86 95C80 94 75 92 70 89Z" fill="#c8e6fa" opacity=".75"/>
   <path d="M1 111L80 89L76 96Z" fill="url(#tail)"/>
-  <path d="M133 78a2.6 2.6 0 1 0 0.1 0Z" fill="#edf3fe"/>
+  <path d="M10 119L80 94L78 100Z" fill="url(#tail)" opacity=".6"/>
+  <ellipse cx="131" cy="79" rx="7.5" ry="6.5" fill="#c8e6fa" opacity=".6"/>
+  <circle cx="131" cy="79" r="3" fill="#0f2a4d"/>
+  <circle cx="132.2" cy="77.8" r="1" fill="#edf3fe"/>
 </svg>

@@ -2,7 +2,8 @@ import { useId } from 'react'
 
 /**
  * Parrot AI key mark, drawn as SVG on a transparent background in the PAIRO palette:
- * a sail (the "P" stroke) over a gliding bird with a blade-line tail.
+ * a feathered sail (the "P" stroke) over a gliding parrot with a hooked beak,
+ * a pale cheek patch and blade-line tail feathers.
  *
  * Tones:
  *  - brand: theme gradients (Sky → Seal Blue → Navy), for feature visuals
@@ -14,11 +15,14 @@ import { useId } from 'react'
 export type ParrotTone = 'brand' | 'mono' | 'paper'
 
 const PARROT_PATHS = {
-  sail: 'M62 4C42 17 35 46 45 69H101C84 54 70 32 62 4Z',
-  body: 'M28 99C58 84 94 69 121 69C137 69 147 77 150 86C141 84 133 88 127 94C110 104 80 103 28 99Z',
+  sail: 'M60 5C41 18 34 46 44 69H101Q100 58 88 47Q86 35 76 27Q72 14 60 5Z',
+  body: 'M28 99C58 84 92 68 118 67C132 66 143 72 147 81C151 86 155 94 151 104C148 101 145 98 142 96C139 95 136 95 133 95C127 102 116 105 105 105C80 106 52 103 28 99Z',
   wing: 'M70 89C88 80 104 76 118 77C108 81 96 88 86 95C80 94 75 92 70 89Z',
   tail: 'M1 111L80 89L76 96Z',
-  eye: 'M133 78a2.6 2.6 0 1 0 0.1 0Z',
+  tail2: 'M10 119L80 94L78 100Z',
+  cheek: 'M131 79m-7.5 0a7.5 6.5 0 1 0 15 0a7.5 6.5 0 1 0 -15 0Z',
+  eye: 'M131 79m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0Z',
+  glint: 'M132.2 77.8m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0Z',
 }
 
 export default function ParrotIcon({ tone = 'brand', className = '', title }: { tone?: ParrotTone; className?: string; title?: string; strokeWidth?: number }) {
@@ -51,7 +55,10 @@ export default function ParrotIcon({ tone = 'brand', className = '', title }: { 
       <path d={PARROT_PATHS.body} fill={brand ? g('body') : light ? '#ffffff' : 'currentColor'} />
       <path className="parrot-wing" d={PARROT_PATHS.wing} fill={brand ? '#c8e6fa' : light ? '#c8e6fa' : 'currentColor'} opacity={brand ? 0.75 : 0.35} />
       <path d={PARROT_PATHS.tail} fill={brand ? g('tail') : light ? '#ffffff' : 'currentColor'} opacity={brand ? 1 : 0.7} />
-      <path className="parrot-eye" d={PARROT_PATHS.eye} fill={brand ? '#edf3fe' : light ? '#0f2a4d' : 'currentColor'} opacity={brand || light ? 1 : 0} />
+      <path d={PARROT_PATHS.tail2} fill={brand ? g('tail') : light ? '#ffffff' : 'currentColor'} opacity={brand ? 0.6 : 0.4} />
+      <path d={PARROT_PATHS.cheek} fill="#c8e6fa" opacity={brand ? 0.6 : light ? 0.8 : 0} />
+      <path className="parrot-eye" d={PARROT_PATHS.eye} fill="#0f2a4d" opacity={brand || light ? 1 : 0} />
+      <path d={PARROT_PATHS.glint} fill="#edf3fe" opacity={brand ? 1 : 0} />
     </svg>
   )
 }
