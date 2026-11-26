@@ -38,11 +38,6 @@ export default function WhySection({ id, eyebrow, title, lead, items, children }
           </div>
 
           <div className="flex flex-col gap-6 p-6 text-white sm:p-10 lg:pl-12">
-            <div className="flex justify-end gap-2" aria-hidden="true">
-              <span className="size-4 rounded-full bg-white/30" />
-              <span className="size-4 rounded-full bg-white/50" />
-              <span className="size-4 rounded-full bg-seal-bright" />
-            </div>
             <div className="max-w-lg text-lg leading-relaxed font-medium sm:text-xl">{lead}</div>
           </div>
         </div>

@@ -297,7 +297,7 @@ export const pricing = {
   billing: { yearly: 'Yearly', yearlyNote: '2 months free', monthly: 'Monthly' },
   packs: [
     {
-      name: 'Free',
+      name: 'Startup',
       audience: 'For individuals getting started',
       price: null as number | null,
       cta: { label: 'Start for free', to: demoLink },

@@ -7,7 +7,7 @@ import ParrotReveal from '../components/ParrotReveal'
 import SectionHeader from '../components/SectionHeader'
 import CtaBanner from '../components/CtaBanner'
 import { DarkHeading, DarkPanel, GlowCard, RefStrip, type Glow } from '../components/Dark'
-import ParrotChat from '../components/ParrotChat'
+import { ChatWithPrompts } from '../components/ParrotChat'
 import { parrotPage, scenarios } from '../content/parrot'
 import { demoLink, globalCta, parrotIntro } from '../content/site'
 
@@ -89,7 +89,7 @@ export default function ParrotAi() {
             })}
           </div>
           <div id="parrot-chat" role="tabpanel" className="lg:sticky lg:top-28">
-            <ParrotChat messages={scenarios[current].chat} playKey={current} className="min-h-[520px]" />
+            <ChatWithPrompts messages={scenarios[current].chat} playKey={current} className="min-h-[520px]" />
           </div>
         </div>
       </section>
@@ -119,7 +119,7 @@ export default function ParrotAi() {
                 <p className="mx-auto mt-2 max-w-sm text-sm text-white/60">No external AI, ever.</p>
               </div>
             </GlowCard>
-            <Button to={demoLink} variant="ghost" className="w-full">
+            <Button to={demoLink} variant="outline" className="w-full">
               Book a demo
             </Button>
           </div>

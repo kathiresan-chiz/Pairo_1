@@ -61,7 +61,16 @@ export interface Solution {
     /** steps with a title only render as a timeline */
     steps: { title: string; text?: string }[]
     extra?: { label: string; value: string }
-    panel: { label: string; title: string; lines?: string[]; message?: { subject: string; body: string; pay: string; attachment: string }; actions?: string[]; facts: string[] }
+    panel: {
+      label: string
+      title: string
+      lines?: string[]
+      message?: { subject: string; body: string; pay: string; attachment: string }
+      actions?: string[]
+      facts: string[]
+      /** one per timeline step: what the panel shows while that step is active */
+      stages?: { label?: string; tone?: string; message?: Partial<{ subject: string; body: string; pay: string; attachment: string }> }[]
+    }
     outcomesTitle: string
     outcomes: { title: string; text: string }[]
     note: string
@@ -131,6 +140,56 @@ export const solutions: Solution[] = [
           attachment: 'Statement of account.pdf',
         },
         actions: ['Send', 'Edit', 'Skip'],
+        stages: [
+          {
+            label: 'Scheduled 5 Nov · awaiting approval',
+            tone: 'Friendly',
+            message: {
+              subject: 'Gentle reminder · INV-1031 · ₹1,20,000',
+              body: 'A gentle reminder — INV-1031 for ₹1,20,000 falls due on 8 Nov.',
+            },
+          },
+          {
+            label: 'Scheduled 8 Nov · awaiting approval',
+            tone: 'Friendly',
+            message: {
+              subject: 'Due today · INV-1031 · ₹1,20,000',
+              body: 'INV-1031 for ₹1,20,000 is due today, 8 Nov. You can pay in one tap below.',
+            },
+          },
+          {
+            label: 'Scheduled 11 Nov · awaiting approval',
+            tone: 'Polite',
+            message: {
+              subject: 'Overdue · INV-1031 · ₹1,20,000',
+              body: 'INV-1031 for ₹1,20,000 was due on 8 Nov and is now overdue. If it is already paid, please share the UTR.',
+            },
+          },
+          {
+            label: 'Scheduled 15 Nov · awaiting approval',
+            tone: 'Firm',
+            message: {
+              subject: 'Overdue · 7 days · INV-1031 · ₹1,20,000',
+              body: 'INV-1031 for ₹1,20,000 is now 7 days overdue. Please clear it, or reply with a date we can expect payment.',
+            },
+          },
+          {
+            label: 'Scheduled 23 Nov · awaiting approval',
+            tone: 'Firm',
+            message: {
+              subject: 'Outstanding · INV-1031 · ₹1,20,000',
+              body: '₹1,20,000 on INV-1031 is still outstanding, 15 days past due. Your updated statement of account is attached.',
+            },
+          },
+          {
+            label: 'Scheduled 8 Dec · awaiting approval',
+            tone: 'Final',
+            message: {
+              subject: 'Please settle at the earliest · INV-1031 · ₹1,20,000',
+              body: 'INV-1031 for ₹1,20,000 is 30 days overdue. Please settle it at the earliest, or call us to talk it through.',
+            },
+          },
+        ],
         facts: [
           'Approval before anything is sent',
           'Autopilot, customer by customer',

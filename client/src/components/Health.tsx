@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { AlertTriangle, Check, X } from 'lucide-react'
 import { GlowCard } from './Dark'
 import { healthCheck, type CheckStatus } from '../content/site'
@@ -28,7 +29,9 @@ export function HealthPanel({ className = '' }: { className?: string }) {
               stroke="url(#hc-grad)"
               strokeWidth="8"
               strokeLinecap="round"
-              strokeDasharray={`${(circ * h.score) / 100} ${circ}`}
+              className="aos-ring"
+              strokeDasharray={circ}
+              style={{ strokeDashoffset: (circ * (100 - h.score)) / 100, '--ring-from': circ } as CSSProperties}
             />
             <defs>
               <linearGradient id="hc-grad" x1="0" x2="1">
@@ -74,7 +77,7 @@ export function HealthPanel({ className = '' }: { className?: string }) {
         })}
       </ul>
 
-      <div className="mt-5 rounded-2xl bg-crimson/10 p-4 ring-1 ring-crimson/30">
+      <div data-aos-item className="mt-5 rounded-2xl bg-crimson/10 p-4 ring-1 ring-crimson/30">
         <p className="text-sm font-semibold text-crimson">{h.alert.title}</p>
         <p className="mt-1 text-sm text-white/75">{h.alert.text}</p>
         <span className="mt-3 inline-block rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink">{h.alert.action}</span>
@@ -100,10 +103,68 @@ export function CustomCheckCard({ className = '' }: { className?: string }) {
           </div>
         ))}
       </dl>
-      <p className="mt-5 flex items-center gap-3 rounded-2xl bg-amber-400/10 px-4 py-3 text-sm ring-1 ring-amber-400/30">
+      <p data-aos-item className="mt-5 flex items-center gap-3 rounded-2xl bg-amber-400/10 px-4 py-3 text-sm ring-1 ring-amber-400/30">
         <span className="grid size-6 place-items-center rounded-full bg-amber-400 text-xs font-bold text-ink">!</span>
         <span className="font-semibold text-amber-200">{b.result}</span>
       </p>
     </GlowCard>
+  )
+}
+
+// Light summary card for the Health Check board: the score ring and today's counts.
+export function HealthScoreCard() {
+  const h = healthCheck
+  const r = 42
+  const circ = 2 * Math.PI * r
+  const counts = [
+    { text: h.counts.clear, cls: 'bg-emerald-50 text-emerald-700', Icon: Check },
+    { text: h.counts.warnings, cls: 'bg-amber-50 text-amber-700', Icon: AlertTriangle },
+    { text: h.counts.problems, cls: 'bg-crimson/10 text-[#c23a56]', Icon: X },
+  ]
+  return (
+    <>
+      <p className="flex items-center gap-2 text-xs font-semibold text-emerald-700">
+        <span className="size-2 animate-pulse rounded-full bg-emerald-500" aria-hidden="true" />
+        {h.live}
+      </p>
+      <div className="relative mx-auto mt-6 size-36">
+        <svg viewBox="0 0 100 100" className="size-full -rotate-90" aria-hidden="true">
+          <circle cx="50" cy="50" r={r} fill="none" stroke="var(--color-mist)" strokeWidth="8" />
+          <circle
+            className="bh-ring"
+            data-from={circ}
+            cx="50"
+            cy="50"
+            r={r}
+            fill="none"
+            stroke="url(#hs-grad)"
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeDasharray={circ}
+            strokeDashoffset={(circ * (100 - h.score)) / 100}
+          />
+          <defs>
+            <linearGradient id="hs-grad" x1="0" x2="1">
+              <stop offset="0" stopColor="#1b4a8c" />
+              <stop offset="1" stopColor="#46b7d4" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div className="absolute inset-0 grid place-content-center text-center">
+          <span className="ob-count text-4xl leading-none font-semibold text-ink" data-value={String(h.score)}>
+            {h.score}
+          </span>
+          <span className="mt-1 text-xs text-muted">health score</span>
+        </div>
+      </div>
+      <ul className="mt-auto grid gap-2 pt-6">
+        {counts.map(({ text, cls, Icon }) => (
+          <li key={text} className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium ${cls}`}>
+            <Icon className="size-4" aria-hidden="true" />
+            {text}
+          </li>
+        ))}
+      </ul>
+    </>
   )
 }

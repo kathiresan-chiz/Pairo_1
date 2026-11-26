@@ -51,11 +51,10 @@ export default function Pricing() {
           {p.packs.map((plan, i) => {
             const featured = 'featured' in plan && plan.featured
             return (
-              <Reveal
-                key={plan.name}
-                delay={(i % 3) * 100}
-                className={`relative flex flex-col overflow-hidden rounded-[2.5rem] p-7 sm:p-8 xl:p-6 ${
-                  featured ? 'text-white shadow-2xl shadow-brand/30' : 'bg-white ring-1 ring-line'
+              <Reveal key={plan.name} delay={(i % 3) * 100} className="flex">
+              <div
+                className={`price-card group relative isolate flex w-full flex-col overflow-hidden rounded-[2.5rem] p-7 sm:p-8 xl:p-6 ${
+                  featured ? 'is-featured text-white shadow-2xl shadow-brand/30' : 'bg-white ring-1 ring-line'
                 }`}
                 style={featured ? { background: brandGradient } : undefined}
               >
@@ -63,8 +62,8 @@ export default function Pricing() {
                   <span className="mb-4 w-fit rounded-full bg-crimson px-3 py-1 text-xs font-semibold text-white">Most popular</span>
                 )}
                 <p className={`text-sm font-medium ${featured ? 'text-seal' : 'text-brand-deep'}`}>{plan.audience}</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight">{plan.name}</h2>
-                <p className="mt-8 text-3xl font-semibold tracking-tight">{plan.price === null ? 'Free' : price(plan.price)}</p>
+                <h2 className={`mt-2 text-2xl font-semibold tracking-tight transition-colors duration-500 ${featured ? '' : 'group-hover:text-brand-deep'}`}>{plan.name}</h2>
+                <p className="price-amount mt-8 w-fit text-3xl font-semibold tracking-tight">{plan.price === null ? 'Free' : price(plan.price)}</p>
                 <p className={`text-sm ${featured ? 'text-white/60' : 'text-muted'}`}>
                   {plan.price === null ? 'forever' : `${per} + GST`}
                 </p>
@@ -72,9 +71,10 @@ export default function Pricing() {
                   {plan.features.map((f, k) => (
                     <li key={f} className={`flex items-start gap-3 ${k === 0 && i > 0 ? 'font-semibold' : ''}`}>
                       <span
-                        className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${
-                          featured ? 'bg-white/15 text-white' : 'bg-brand/10 text-brand'
+                        className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full transition-colors duration-300 ${
+                          featured ? 'bg-white/15 text-white group-hover:bg-white group-hover:text-brand-deep' : 'bg-brand/10 text-brand group-hover:bg-brand group-hover:text-white'
                         }`}
+                        style={{ transitionDelay: `${k * 50}ms` }}
                       >
                         <Check className="size-3" aria-hidden="true" />
                       </span>
@@ -87,6 +87,7 @@ export default function Pricing() {
                     {plan.cta.label}
                   </Button>
                 </div>
+              </div>
               </Reveal>
             )
           })}

@@ -6,7 +6,8 @@ import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
 import SectionHeader from '../components/SectionHeader'
 import CtaBanner from '../components/CtaBanner'
-import { DarkPanel, GiantWord, GlowCard, MetricCard, type Glow } from '../components/Dark'
+import { DarkPanel, GlowCard, type Glow } from '../components/Dark'
+import { BentoHero } from '../components/Bento'
 import { solutionPath, solutions, solutionsHub } from '../content/solutions'
 import { globalCta } from '../content/site'
 
@@ -40,20 +41,12 @@ export default function Solutions() {
 
       {/* 12 agents · 1 ledger · 0 re-entry */}
       <DarkPanel>
-        <div className="relative">
-          <GiantWord className="-mb-[0.32em]">Agents</GiantWord>
-          <div className="relative grid gap-3 sm:grid-cols-3">
-            {hub.stats.map((st, i) => (
-              <MetricCard
-                key={st.label}
-                label={st.label}
-                value={st.value}
-                variant={i === 0 ? 'stripes' : 'fill'}
-                fill={[0.62, 0.36, 0.48][i]}
-              />
-            ))}
-          </div>
-        </div>
+        <BentoHero
+          eyebrow="Agents"
+          title={hub.stats.map((st) => `${st.value} ${st.label}.`).join(' ')}
+          stats={hub.stats}
+          aside={<AgentsAtWork active={active} />}
+        />
 
         {/* The agents */}
         <div className="mt-16 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -111,6 +104,42 @@ export default function Solutions() {
   )
 }
 
+// Light card for the Agents board: the agent posting now, and the next ones up.
+function AgentsAtWork({ active }: { active: number }) {
+  const rows = [0, 1, 2, 3].map((k) => solutions[(active + k) % solutions.length])
+  return (
+    <>
+      <p className="flex items-center gap-2 text-xs font-semibold text-emerald-700">
+        <span className="size-2 animate-pulse rounded-full bg-emerald-500" aria-hidden="true" />
+        Agents at work · 24×7
+      </p>
+      <ul className="mt-5 grid gap-2">
+        {rows.map((s, k) => (
+          <li
+            key={s.slug}
+            className={`stage-in flex items-center gap-3 rounded-2xl px-3 py-2.5 transition-colors ${k === 0 ? 'bg-seal' : 'bg-mist'}`}
+            style={{ animationDelay: `${k * 0.08}s` }}
+          >
+            <span className={`grid size-9 shrink-0 place-items-center rounded-xl ${k === 0 ? 'bg-brand text-white' : 'bg-white text-brand'}`}>
+              <s.icon className="size-4" aria-hidden="true" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold text-ink">{s.agent}</span>
+              <span className="block truncate text-xs text-muted">{k === 0 ? s.result : 'queued'}</span>
+            </span>
+            {k === 0 && (
+              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-emerald-500 text-white">
+                <Check className="size-3.5" aria-hidden="true" />
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+      <p className="mt-auto pt-5 text-xs text-muted">{solutionsHub.ledgerLabel}</p>
+    </>
+  )
+}
+
 function Points({ items }: { items: string[] }) {
   return (
     <ul className="mt-6 grid gap-2 text-sm">
@@ -149,8 +178,8 @@ function AlsoBuiltIn() {
               ))}
             </ul>
             <ul className="grid gap-2 p-3">
-              {tc.messages.map((m) => (
-                <li key={m.who} className="rounded-xl bg-white p-2.5">
+              {tc.messages.map((m, i) => (
+                <Reveal as="li" key={m.who} delay={300 + i * 700} className="rounded-xl bg-white p-2.5">
                   <p className="text-[10px] text-muted">{m.who}</p>
                   {m.text && <p className="mt-0.5">{m.text}</p>}
                   {m.chip && <span className="mt-1 inline-block rounded-full bg-seal px-2 py-0.5 text-[10px] font-semibold text-navy">{m.chip}</span>}
@@ -160,7 +189,7 @@ function AlsoBuiltIn() {
                       {m.attachment}
                     </span>
                   )}
-                </li>
+                </Reveal>
               ))}
             </ul>
           </div>

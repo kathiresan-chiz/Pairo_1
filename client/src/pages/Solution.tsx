@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Check, LayoutGrid, MessageCircle } from 'lucide-react'
 import Seo from '../components/Seo'
@@ -6,9 +7,10 @@ import Button from '../components/Button'
 import SectionHeader, { Eyebrow } from '../components/SectionHeader'
 import CtaBanner from '../components/CtaBanner'
 import { DarkHeading, DarkPanel } from '../components/Dark'
-import ParrotChat from '../components/ParrotChat'
+import ParrotChat, { PromptChip } from '../components/ParrotChat'
+import type { ChatMessage } from '../content/chat'
 import { AgentLive, DataVisual, FlagshipPanel, ManualVsAgent, Outcomes, StepRow } from '../components/SolutionBlocks'
-import { solutionBySlug, solutionPath, solutions } from '../content/solutions'
+import { solutionBySlug, solutionPath, solutions, type Solution as SolutionData } from '../content/solutions'
 import { demoLink, globalCta } from '../content/site'
 
 export default function Solution() {
@@ -124,43 +126,28 @@ export default function Solution() {
       {/* Flagship capability */}
       <DarkPanel>
         <DarkHeading eyebrow={f.eyebrow} title={f.title} align="left" />
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-start">
-          {timeline ? (
-            <div>
-              <ol className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {timeline ? (
+          <FlagshipTimeline key={s.slug} f={f} />
+        ) : (
+          <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-start">
+              <ol className="grid gap-3">
                 {f.steps.map((st, i) => (
-                  <li key={st.title} className="rounded-2xl bg-white/[0.05] px-4 py-5 text-center ring-1 ring-white/10">
-                    <span className="block text-xs text-white/45">0{i + 1}</span>
-                    <span className="mt-1 block text-lg font-semibold">{st.title}</span>
+                  <li key={st.title} className="flex gap-4 rounded-2xl bg-white/[0.04] p-5 ring-1 ring-white/10">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#5448ff] to-brand text-sm font-semibold">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <p className="font-semibold">{st.title}</p>
+                      <p className="mt-1 text-sm leading-relaxed text-white/60">{st.text}</p>
+                    </div>
                   </li>
                 ))}
               </ol>
-              {f.extra && (
-                <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2 text-sm ring-1 ring-white/10">
-                  <span className="text-white/55">{f.extra.label}</span>
-                  <span className="font-semibold">{f.extra.value}</span>
-                </p>
-              )}
+            <div className="lg:sticky lg:top-28">
+              <FlagshipPanel panel={f.panel} />
             </div>
-          ) : (
-            <ol className="grid gap-3">
-              {f.steps.map((st, i) => (
-                <li key={st.title} className="flex gap-4 rounded-2xl bg-white/[0.04] p-5 ring-1 ring-white/10">
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#5448ff] to-brand text-sm font-semibold">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <p className="font-semibold">{st.title}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-white/60">{st.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          )}
-          <div className="lg:sticky lg:top-28">
-            <FlagshipPanel panel={f.panel} />
           </div>
-        </div>
+        )}
       </DarkPanel>
 
       <section className="container-x pb-16 sm:pb-20">
@@ -171,19 +158,7 @@ export default function Solution() {
       {/* Parrot AI for this module */}
       {s.chat && (
         <section className="container-x pb-16 sm:pb-20">
-          <div className="grid gap-10 rounded-[2.5rem] bg-navy p-6 text-white sm:p-12 lg:grid-cols-[1fr_1.05fr] lg:items-center">
-            <div>
-              <SectionHeader eyebrow={`Parrot AI · ${s.name}`} title="Ask. Get answers straight from your books." tone="light" />
-              <ul className="mt-8 grid gap-2">
-                {s.prompts.map((p) => (
-                  <li key={p} className="w-fit rounded-full bg-white/10 px-4 py-2 text-sm ring-1 ring-white/15">
-                    “{p}”
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <ParrotChat messages={s.chat} />
-          </div>
+          <PromptedChat key={s.slug} name={s.name} prompts={s.prompts} chat={s.chat} />
         </section>
       )}
 
@@ -214,5 +189,109 @@ export default function Solution() {
 
       <CtaBanner title={globalCta.title} primary={globalCta.primary} secondary={globalCta.secondary} />
     </>
+  )
+}
+
+// Parrot AI block: click a prompt on the left to light up that exchange in the chat.
+function PromptedChat({ name, prompts, chat }: { name: string; prompts: string[]; chat: ChatMessage[] }) {
+  const [focus, setFocus] = useState<string | null>(null)
+  return (
+    <div className="grid gap-10 rounded-[2.5rem] bg-navy p-6 text-white sm:p-12 lg:grid-cols-[1fr_1.05fr] lg:items-center">
+      <div>
+        <SectionHeader eyebrow={`Parrot AI · ${name}`} title="Ask. Get answers straight from your books." tone="light" />
+        <ul className="mt-8 grid gap-2">
+          {prompts.map((p) => (
+            <li key={p}>
+              <PromptChip text={`“${p}”`} tone="dark" active={focus === p} onClick={() => setFocus((f) => (f === p ? null : p))} />
+            </li>
+          ))}
+        </ul>
+      </div>
+      <ParrotChat messages={chat} focus={focus} />
+    </div>
+  )
+}
+
+const STAGE_MS = 3200
+
+// Timeline flagship: the steps change automatically (or pick one), and the panel shows that step's message.
+function FlagshipTimeline({ f }: { f: SolutionData['flagship'] }) {
+  const [stage, setStage] = useState(0)
+  const [inView, setInView] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const tone = f.panel.stages?.[stage]?.tone
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el || !('IntersectionObserver' in window)) return
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.3 })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const playing = inView && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  useEffect(() => {
+    if (!playing) return
+    const id = window.setTimeout(() => setStage((v) => (v + 1) % f.steps.length), STAGE_MS)
+    return () => window.clearTimeout(id)
+  }, [playing, stage, f.steps.length])
+
+  return (
+    <div
+      ref={ref}
+      className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-start"
+    >
+      <div>
+        <ol className="grid grid-cols-2 gap-3 sm:grid-cols-3" aria-label="Reminder timeline">
+          {f.steps.map((st, i) => {
+            const on = i === stage
+            const done = i < stage
+            return (
+              <li key={st.title}>
+                <button
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setStage(i)}
+                  className={`stage-step relative w-full cursor-pointer overflow-hidden rounded-2xl px-4 py-5 text-center transition-all duration-500 ${
+                    on
+                      ? 'bg-brand text-white shadow-[0_18px_40px_-16px_rgba(58,120,194,0.8)] scale-[1.03]'
+                      : 'bg-white text-ink ring-1 ring-line hover:ring-brand/50'
+                  }`}
+                >
+                  <span className={`flex items-center justify-center gap-1 text-xs ${on ? 'text-seal' : 'text-muted'}`}>
+                    {done ? <Check className="size-3 text-brand" aria-hidden="true" /> : null}0{i + 1}
+                  </span>
+                  <span className="mt-1 block text-lg font-semibold">{st.title}</span>
+                  {f.panel.stages?.[i]?.message?.subject && (
+                    <span className={`mt-0.5 block truncate text-xs ${on ? 'text-seal' : 'text-muted'}`}>
+                      {f.panel.stages[i].message!.subject!.split(' · ')[0]}
+                    </span>
+                  )}
+                  {on && (
+                    <span
+                      key={`p${stage}${playing}`}
+                      className={`stage-progress absolute inset-x-0 bottom-0 h-1 origin-left bg-seal-bright ${playing ? '' : 'is-paused'}`}
+                      style={{ animationDuration: `${STAGE_MS}ms` }}
+                      aria-hidden="true"
+                    />
+                  )}
+                </button>
+              </li>
+            )
+          })}
+        </ol>
+        {f.extra && (
+          <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm ring-1 ring-line">
+            <span className="text-muted">{f.extra.label}</span>
+            <span key={tone} className="stage-in font-semibold text-brand-deep">
+              {tone ?? f.extra.value}
+            </span>
+          </p>
+        )}
+      </div>
+      <div className="lg:sticky lg:top-28">
+        <FlagshipPanel panel={f.panel} stage={stage} />
+      </div>
+    </div>
   )
 }

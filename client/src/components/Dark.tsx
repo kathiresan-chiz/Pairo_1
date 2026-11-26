@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type ElementType, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ElementType, type ReactNode } from 'react'
 import Reveal from './Reveal'
 
 // Building blocks styled after the dark-card references (glow cards, metric cards,
@@ -19,6 +19,8 @@ interface GlowCardProps {
   active?: boolean
   /** the glow sweeps left ↔ right (default); set false for a still glow */
   drift?: boolean
+  /** rows inside rise in one by one on scroll (off for cards that animate their own content) */
+  aosItems?: boolean
   as?: ElementType
   className?: string
   style?: CSSProperties
@@ -29,14 +31,49 @@ interface GlowCardProps {
 // Each card starts its sweep at a different point, so neighbours never move in step.
 let sweepCount = 0
 
-export function GlowCard({ glow = 'bl', active, drift = true, as: Tag = 'div', className = '', style, children, ...rest }: GlowCardProps) {
+// Rows that rise in one after another once the card is on screen.
+const AOS_ITEMS = ':scope li, :scope dl > div, :scope [data-aos-item]'
+
+export function GlowCard({ glow = 'bl', active, drift = true, aosItems = true, as: Tag = 'div', className = '', style, children, ...rest }: GlowCardProps) {
   const [delay] = useState(() => -((sweepCount++ % 6) * 1.15))
+  const ref = useRef<HTMLElement>(null)
+  const [inView, setInView] = useState(false)
   const moving = drift && glow !== 'none'
   // Moving cards use the two-tone sweep glow, lit from the top or the bottom as before.
   const shown: Glow = !moving ? glow : glow === 'tr' || glow === 'sweep-top' ? 'sweep-top' : 'sweep'
+
+  // Animate on scroll: the card rises in, then its rows follow in turn.
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (aosItems) {
+      el.querySelectorAll<HTMLElement>(AOS_ITEMS).forEach((item, i) => {
+        item.classList.add('aos-item')
+        item.style.setProperty('--aos-i', String(Math.min(i, 14)))
+      })
+    }
+    if (!('IntersectionObserver' in window)) {
+      setInView(true)
+      return
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -6% 0px' },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [aosItems])
+
   return (
     <Tag
-      className={`glow-card ${moving ? 'glow-drift' : ''} ${className}`}
+      ref={ref}
+      data-aos=""
+      className={`glow-card ${moving ? 'glow-drift' : ''} ${inView ? 'aos-in' : ''} ${className}`}
       data-glow={shown}
       data-active={active ? '' : undefined}
       style={moving ? ({ '--drift-delay': `${delay}s`, ...style } as CSSProperties) : style}

@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { ArrowRight, Check, FileSpreadsheet, Paperclip, Sparkles } from 'lucide-react'
 import Reveal from './Reveal'
 import { GlowCard } from './Dark'
-import ParrotChat from './ParrotChat'
+import { ChatWithPrompts } from './ParrotChat'
 import type { Solution, VisualRow } from '../content/solutions'
 
 const toneCls: Record<NonNullable<VisualRow['tone']>, string> = {
@@ -70,7 +70,7 @@ export function AgentLive({ s }: { s: Solution }) {
 
 // Small illustrative screen for "Key capabilities".
 export function DataVisual({ v }: { v: Solution['visual'] }) {
-  if (v.chat) return <ParrotChat messages={v.chat} glow="brand" />
+  if (v.chat) return <ChatWithPrompts messages={v.chat} glow="brand" />
   return (
     <div className="rounded-[2rem] bg-white p-6 ring-1 ring-line sm:p-8" role="figure" aria-label={`${v.title} (sample data)`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -160,37 +160,86 @@ export function DataVisual({ v }: { v: Solution['visual'] }) {
 
 /* ---------------------------------------------------------------- Steps */
 
-// Numbered steps joined by the brand gradient line (as in the original "How it works").
+const SEQ_STEP = 950 // ms between steps
+
+// Numbered steps joined by the brand gradient line, played one at a time when scrolled into view:
+// the line draws across and each step pops in as the line reaches it.
 export function StepRow({ steps }: { steps: { title: string; label?: string; text?: string; flag?: string }[] }) {
   const cols = { 3: 'md:grid-cols-3', 4: 'md:grid-cols-4', 5: 'md:grid-cols-5', 6: 'md:grid-cols-6' }[steps.length] ?? 'md:grid-cols-4'
+  const edge = `${50 / Math.min(Math.max(steps.length, 3), 6)}%` // line runs between the first and last circle centres
+  const ref = useRef<HTMLOListElement>(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el || !('IntersectionObserver' in window)) {
+      setVisible(true)
+      return
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.35 },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <ol className={`relative mt-12 grid gap-6 md:gap-4 ${cols}`}>
+    <ol
+      ref={ref}
+      className={`seq relative mt-12 grid gap-6 md:gap-4 ${cols} ${visible ? 'is-visible' : ''}`}
+      style={{ '--seq-line': `${(steps.length - 1) * SEQ_STEP}ms` } as CSSProperties}
+    >
       <span
-        className="absolute top-7 right-[8%] left-[8%] hidden h-px bg-gradient-to-r from-brand via-brand-deep to-crimson md:block"
+        style={{ left: edge, right: edge }}
+        className="seq-line absolute top-7 hidden h-px bg-gradient-to-r from-brand via-brand-deep to-crimson md:block"
         aria-hidden="true"
       />
-      {steps.map((step, i) => (
-        <Reveal as="li" key={`${step.title}-${i}`} delay={i * 90} className="relative flex gap-5 md:flex-col md:items-center md:text-center">
-          <span className="relative grid size-14 shrink-0 place-items-center rounded-full bg-white text-sm font-semibold text-navy ring-1 ring-line">
-            {step.label ?? `0${i + 1}`}
-          </span>
-          <div>
-            <h3 className="text-lg font-semibold md:mt-5">{step.title}</h3>
-            {step.text && <p className="mt-1 text-sm leading-relaxed text-muted">{step.text}</p>}
-            {step.flag && <span className="mt-2 inline-block rounded-full bg-crimson px-2.5 py-0.5 text-xs font-semibold text-white">{step.flag}</span>}
-          </div>
-        </Reveal>
-      ))}
+      {steps.map((step, i) => {
+        const d = i * SEQ_STEP
+        return (
+          <li key={`${step.title}-${i}`} className="relative flex gap-5 md:flex-col md:items-center md:text-center">
+            <span
+              className="seq-dot relative grid size-14 shrink-0 place-items-center rounded-full bg-white text-sm font-semibold text-navy ring-1 ring-line"
+              style={{ transitionDelay: `${d}ms`, '--d': `${d}ms` } as CSSProperties}
+            >
+              {step.label ?? `0${i + 1}`}
+            </span>
+            <div className="seq-text" style={{ transitionDelay: `${d + 250}ms` }}>
+              <h3 className="text-lg font-semibold md:mt-5">{step.title}</h3>
+              {step.text && <p className="mt-1 text-sm leading-relaxed text-muted">{step.text}</p>}
+              {step.flag && (
+                <span
+                  className="seq-flag mt-2 inline-block rounded-full bg-crimson px-2.5 py-0.5 text-xs font-semibold text-white"
+                  style={{ '--d': `${d + 700}ms` } as CSSProperties}
+                >
+                  {step.flag}
+                </span>
+              )}
+            </div>
+          </li>
+        )
+      })}
     </ol>
   )
 }
 
 /* ---------------------------------------------------------------- Flagship */
 
-export function FlagshipPanel({ panel }: { panel: Solution['flagship']['panel'] }) {
+// The flagship panel. With `stage`, the label and message follow that timeline step.
+export function FlagshipPanel({ panel: base, stage }: { panel: Solution['flagship']['panel']; stage?: number }) {
+  const st = stage !== undefined ? base.stages?.[stage] : undefined
+  const panel = st ? { ...base, label: st.label ?? base.label, message: base.message && { ...base.message, ...st.message } } : base
   return (
     <GlowCard glow="br" className="p-6 sm:p-8">
-      <p className="text-xs font-semibold tracking-[0.16em] text-seal-bright/80 uppercase">{panel.label}</p>
+      <p key={`l${stage}`} className="stage-in text-xs font-semibold tracking-[0.16em] text-seal-bright/80 uppercase">
+        {panel.label}
+      </p>
       <p className="mt-3 text-xl font-semibold">{panel.title}</p>
       {panel.lines && (
         <ul className="mt-3 grid gap-1 text-sm text-white/65">
@@ -200,7 +249,7 @@ export function FlagshipPanel({ panel }: { panel: Solution['flagship']['panel'] 
         </ul>
       )}
       {panel.message && (
-        <div className="mt-5 rounded-2xl bg-white p-4 text-ink">
+        <div key={`m${stage}`} className="stage-in mt-5 rounded-2xl bg-white p-4 text-ink ring-1 ring-line">
           <p className="text-sm font-semibold">{panel.message.subject}</p>
           <p className="mt-2 text-sm leading-relaxed text-muted">{panel.message.body}</p>
           <span className="mt-3 inline-block rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white">{panel.message.pay}</span>
@@ -213,7 +262,7 @@ export function FlagshipPanel({ panel }: { panel: Solution['flagship']['panel'] 
       {panel.actions && (
         <div className="mt-4 flex gap-2 text-xs font-semibold">
           {panel.actions.map((a, i) => (
-            <span key={a} className={`rounded-full px-4 py-2 ${i === 0 ? 'bg-white text-ink' : 'ring-1 ring-white/20'}`}>
+            <span key={a} className={`rounded-full px-4 py-2 ${i === 0 ? 'bg-brand text-white' : 'ring-1 ring-white/20'}`}>
               {a}
             </span>
           ))}

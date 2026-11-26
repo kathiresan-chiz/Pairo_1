@@ -14,7 +14,7 @@ import LiquidFill from '../components/LiquidFill'
 import ModuleExplorer from '../components/ModuleExplorer'
 import AiSection from '../components/AiSection'
 import WhySection from '../components/WhySection'
-import ParrotChat from '../components/ParrotChat'
+import ParrotChat, { PromptChip } from '../components/ParrotChat'
 import { CustomCheckCard, HealthPanel } from '../components/Health'
 import { StepRow } from '../components/SolutionBlocks'
 import OnboardingSection from '../components/OnboardingSection'
@@ -108,6 +108,7 @@ function useStagedSections(total: number) {
 
 export default function Home() {
   const stage = useStagedSections(SECTIONS)
+  const [chatFocus, setChatFocus] = useState<string | null>(null)
   return (
     <>
       <Seo
@@ -311,8 +312,12 @@ export default function Home() {
                   {homeChat
                     .filter((m) => m.from === 'you' && m.text && m.text !== 'Confirm')
                     .map((m) => (
-                      <li key={m.text} className="w-fit rounded-full bg-mist px-4 py-2 text-sm font-medium ring-1 ring-line">
-                        {m.voice ? m.text : `“${m.text}”`}
+                      <li key={m.text}>
+                        <PromptChip
+                          text={m.voice ? m.text! : `“${m.text}”`}
+                          active={chatFocus === m.text}
+                          onClick={() => setChatFocus((f) => (f === m.text ? null : m.text!))}
+                        />
                       </li>
                     ))}
                 </ul>
@@ -320,7 +325,7 @@ export default function Home() {
                   See Parrot AI in action
                 </Button>
               </div>
-              <ParrotChat messages={homeChat} />
+              <ParrotChat messages={homeChat} focus={chatFocus} />
             </Reveal>
           </section>
         </>

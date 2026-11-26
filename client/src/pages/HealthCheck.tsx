@@ -5,8 +5,9 @@ import Button from '../components/Button'
 import Marquee from '../components/Marquee'
 import SectionHeader, { Eyebrow } from '../components/SectionHeader'
 import CtaBanner from '../components/CtaBanner'
-import { DarkHeading, DarkPanel, GiantWord, GlowCard, MetricCard, type Glow } from '../components/Dark'
-import { CustomCheckCard, HealthPanel } from '../components/Health'
+import { DarkHeading, DarkPanel, GlowCard, type Glow } from '../components/Dark'
+import { BentoHero } from '../components/Bento'
+import { CustomCheckCard, HealthPanel, HealthScoreCard } from '../components/Health'
 import { StepRow } from '../components/SolutionBlocks'
 import { demoLink, globalCta, healthCheck } from '../content/site'
 
@@ -50,14 +51,7 @@ export default function HealthCheck() {
 
       {/* 70 checks across the audit areas */}
       <DarkPanel className="mt-10">
-        <div className="relative">
-          <GiantWord className="-mb-[0.32em]">70 checks</GiantWord>
-          <div className="relative grid gap-3 sm:grid-cols-3">
-            {h.stats.map((st, i) => (
-              <MetricCard key={st.label} label={st.label} value={st.value} variant={i === 0 ? 'stripes' : 'fill'} fill={[0.6, 0.4, 0.5][i]} />
-            ))}
-          </div>
-        </div>
+        <BentoHero eyebrow="Health Check" title={h.scope} text={h.homeEyebrow} stats={h.stats} aside={<HealthScoreCard />} />
         <div className="mt-16">
           <DarkHeading eyebrow={h.homeEyebrow} title={h.scope} align="left" />
         </div>
